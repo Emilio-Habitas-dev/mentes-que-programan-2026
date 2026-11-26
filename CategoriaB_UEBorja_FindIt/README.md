@@ -66,3 +66,10 @@ docs/                Plan, bocetos y reto
 ## Recursos de terceros
 
 - Sonido de clic (`recursos/clic.wav`): recortado de «Mouse Button Click» de sarthakraj_308 (Pixabay, licencia de contenido de Pixabay, uso gratuito).
+
+## Equipo
+
+- **Emilio Navas** ([@Emilio-Habitas-dev](https://github.com/Emilio-Habitas-dev))
+- **JoseOrdo0502** ([@josepotato0522-gif](https://github.com/josepotato0522-gif))
+
+Unidad Educativa Borja · Mentes que Programan 2026.
