@@ -1,5 +1,7 @@
 {
-  "_nota": "Credenciales FICTICIAS solo para la demostración. No es seguridad real.",
-  "usuario": "prueba1",
-  "clave": "prueba-administrador"
+  "_nota": "Contraseña guardada cifrada (PBKDF2 + sal).",
+  "usuario": "Emilio",
+  "clave": "2a63b50cf23b91f72bcdb5861f8105e2b77d56ef78f0e10250f301a9a103c7c3",
+  "sal": "56b12c7fac5b74b584ea2c5692e2d978",
+  "nombre": "Emilio"
 }

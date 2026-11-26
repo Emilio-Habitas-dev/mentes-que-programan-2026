@@ -140,8 +140,3 @@ class Ventana:
 
     def guardar(self):
         datos.guardar(self.datos)
-
-    def restablecer_datos(self):
-        """Vuelve a los 10 objetos de prueba (útil antes de la demostración). Borra también cuentas y mensajes."""
-        datos.restablecer()
-        self.datos = datos.cargar()

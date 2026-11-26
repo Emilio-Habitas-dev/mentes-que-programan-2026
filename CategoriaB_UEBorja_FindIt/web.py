@@ -349,13 +349,6 @@ def admin_usuarios():
                            descripcion=usuarios.descripcion)
 
 
-@app.route("/admin/restablecer", methods=["POST"])
-@requiere_admin
-def restablecer():
-    almacen.restablecer()
-    return redirect(url_for("panel"))
-
-
 if __name__ == "__main__":
     # host="0.0.0.0": acepta conexiones de otros equipos de la misma red (no solo de este)
     app.run(host="0.0.0.0", port=5000, debug=False)

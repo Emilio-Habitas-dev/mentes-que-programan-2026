@@ -1,6 +1,5 @@
 """Vista Panel del administrador: tarjetas de acceso a sus funciones (según el boceto 03)."""
 import tkinter as tk
-from tkinter import messagebox
 
 from app import estilos
 from app.logica import reclamos, reportes
@@ -28,7 +27,7 @@ class PantallaPanelAdmin(tk.Frame):
              len(reportes.pendientes(app.datos)), lambda: app.mostrar("reportes")),
             ("✎", "Revisar objetos encontrados", "Consulta la tabla completa de objetos.",
              None, lambda: app.mostrar("listado")),
-            ("⚙", "Opciones", "Restablecer los 10 objetos de prueba.", None, self.restablecer),
+            ("⚙", "Opciones", "Cambia tu nombre, usuario y contraseña desde la versión web.", None, None),
         ]
         for indice, (icono, titulo, descripcion, contador, accion) in enumerate(tarjetas):
             self._tarjeta(rejilla, indice // 2, indice % 2, icono, titulo, descripcion, contador, accion)
@@ -53,9 +52,3 @@ class PantallaPanelAdmin(tk.Frame):
             for widget in [tarjeta, cabecera] + tarjeta.winfo_children() + cabecera.winfo_children():
                 widget.bind("<Button-1>", lambda _: accion())
                 widget.configure(cursor="hand2")
-
-    def restablecer(self):
-        if messagebox.askyesno("Restablecer datos", "¿Volver a los 10 objetos de prueba?\n"
-                                                     "Se borrarán los reclamos y cambios hechos."):
-            self.app.restablecer_datos()
-            self.app.mostrar("panel_admin")
