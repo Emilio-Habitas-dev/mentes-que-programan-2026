@@ -1,0 +1,106 @@
+{
+  "objetos": [
+    {
+      "id": 1,
+      "nombre": "Chompa azul con capucha",
+      "categoria": "Ropa",
+      "lugar": "Cancha de básquet",
+      "fecha_hallazgo": "2026-11-18",
+      "estado": "Disponible",
+      "descripcion": "Talla M con cierre plateado",
+      "fecha_entrega": null
+    },
+    {
+      "id": 2,
+      "nombre": "Cartuchera roja",
+      "categoria": "Útiles",
+      "lugar": "Aula 2do BGU A",
+      "fecha_hallazgo": "2026-11-19",
+      "estado": "Disponible",
+      "descripcion": "Contiene esferos y un borrador",
+      "fecha_entrega": null
+    },
+    {
+      "id": 3,
+      "nombre": "Calculadora científica",
+      "categoria": "Tecnología",
+      "lugar": "Laboratorio de Física",
+      "fecha_hallazgo": "2026-11-19",
+      "estado": "Reclamado",
+      "descripcion": "Color negro con tapa deslizable",
+      "fecha_entrega": null
+    },
+    {
+      "id": 4,
+      "nombre": "Termo metálico",
+      "categoria": "Otros",
+      "lugar": "Bar del colegio",
+      "fecha_hallazgo": "2026-11-20",
+      "estado": "Disponible",
+      "descripcion": "Color verde de 500 ml",
+      "fecha_entrega": null
+    },
+    {
+      "id": 5,
+      "nombre": "Balón de fútbol",
+      "categoria": "Deportes",
+      "lugar": "Cancha principal",
+      "fecha_hallazgo": "2026-11-20",
+      "estado": "Entregado",
+      "descripcion": "Número 5 con franjas amarillas",
+      "fecha_entrega": null
+    },
+    {
+      "id": 6,
+      "nombre": "Audífonos inalámbricos",
+      "categoria": "Tecnología",
+      "lugar": "Biblioteca",
+      "fecha_hallazgo": "2026-11-23",
+      "estado": "Disponible",
+      "descripcion": "Estuche blanco de carga",
+      "fecha_entrega": null
+    },
+    {
+      "id": 7,
+      "nombre": "Cuaderno universitario",
+      "categoria": "Útiles",
+      "lugar": "Aula 1ro BGU B",
+      "fecha_hallazgo": "2026-11-23",
+      "estado": "Disponible",
+      "descripcion": "Cien hojas de cuadros con forro verde",
+      "fecha_entrega": null
+    },
+    {
+      "id": 8,
+      "nombre": "Gorra negra",
+      "categoria": "Ropa",
+      "lugar": "Patio central",
+      "fecha_hallazgo": "2026-11-24",
+      "estado": "Reclamado",
+      "descripcion": "Visera plana con logotipo bordado",
+      "fecha_entrega": null
+    },
+    {
+      "id": 9,
+      "nombre": "Llaves con llavero",
+      "categoria": "Otros",
+      "lugar": "Entrada principal",
+      "fecha_hallazgo": "2026-11-24",
+      "estado": "Disponible",
+      "descripcion": "Tres llaves y un llavero de madera",
+      "fecha_entrega": null
+    },
+    {
+      "id": 10,
+      "nombre": "Flauta dulce",
+      "categoria": "Otros",
+      "lugar": "Sala de música",
+      "fecha_hallazgo": "2026-11-24",
+      "estado": "Disponible",
+      "descripcion": "Color crema con funda de tela",
+      "fecha_entrega": null
+    }
+  ],
+  "reclamos": [],
+  "reportes": []
+}
