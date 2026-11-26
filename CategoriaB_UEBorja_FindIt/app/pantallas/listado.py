@@ -1,6 +1,6 @@
 """Vista Listado: conteo por estado, búsqueda, filtros y tabla profesional de objetos encontrados."""
 import tkinter as tk
-from tkinter import ttk
+from tkinter import messagebox, ttk
 
 from app import estilos
 from app.logica import objetos, reclamos
@@ -12,12 +12,14 @@ COLUMNAS = {
     "estado": ("Estado", 115), "entrega": ("Fecha entrega", 110), "accion": ("Acción", 110),
 }
 TEXTO_RECLAMAR = "Reclamar  ›"
+TEXTO_BORRAR = "Borrar  ✕"
 
 
 class PantallaListado(tk.Frame):
     def __init__(self, padre, app):
         super().__init__(padre, bg=estilos.FONDO, padx=32, pady=16)
         self.app = app
+        self.es_admin = app.modo == "admin"  # El administrador no reclama: registra y borra objetos
 
         if app.modo == "admin":
             estilos.boton_enlace(self, "←  Volver al panel", lambda: app.mostrar("panel_admin")).pack(anchor="w")
@@ -36,10 +38,13 @@ class PantallaListado(tk.Frame):
         estilos.texto(izquierda, "Objetos encontrados", 26, "bold", fondo=estilos.FONDO).pack(anchor="w")
         estilos.texto(izquierda, "Explora y busca entre los objetos encontrados en Inspección.", 12,
                       color=estilos.TEXTO_SUAVE, fondo=estilos.FONDO).pack(anchor="w")
-        if self.app.modo != "admin":
-            boton = estilos.boton_primario(izquierda, "+  Reportar objeto encontrado", lambda: self.app.mostrar("reportar"))
-            boton.configure(bg=estilos.MARINO, activebackground=estilos.TEXTO)
-            boton.pack(anchor="w", pady=(10, 0))
+        if self.es_admin:
+            texto, destino = "+  Registrar objeto perdido", "registrar_objeto"
+        else:
+            texto, destino = "+  Reportar objeto encontrado", "reportar"
+        boton = estilos.boton_primario(izquierda, texto, lambda: self.app.mostrar(destino))
+        boton.configure(bg=estilos.MARINO, activebackground=estilos.TEXTO)
+        boton.pack(anchor="w", pady=(10, 0))
 
         # Tarjetas de conteo: al hacer clic filtran por ese estado
         conteo = objetos.contar_por_estado(self.app.datos)
@@ -92,8 +97,11 @@ class PantallaListado(tk.Frame):
         abajo.pack(side="bottom", fill="x", pady=(12, 0))
         self.mensaje = estilos.texto(abajo, "", 11, color=estilos.TEXTO_SUAVE, fondo=estilos.FONDO)
         self.mensaje.pack(side="left")
-        self.boton_reclamar = estilos.boton_primario(abajo, "Reclamar", self.reclamar)
-        self.boton_reclamar.pack(side="right")
+        # Botón de acción: «Reclamar» para estudiantes/profesores, «Borrar objeto» (rojo) para el administrador
+        self.color_accion = estilos.ERROR if self.es_admin else estilos.AZUL
+        self.boton_accion = estilos.boton_primario(abajo, "Borrar objeto" if self.es_admin else "Reclamar",
+                                                   self.borrar if self.es_admin else self.reclamar)
+        self.boton_accion.pack(side="right")
         estilos.boton_secundario(abajo, "Ver detalle  →", self.ver_detalle).pack(side="right", padx=10)
 
         self.marco_tabla = estilos.tarjeta(self, relleno=0)
@@ -111,7 +119,7 @@ class PantallaListado(tk.Frame):
 
         self.tabla.bind("<Double-1>", lambda _: self.ver_detalle())
         self.tabla.bind("<ButtonRelease-1>", self.clic_en_tabla)
-        self.tabla.bind("<<TreeviewSelect>>", lambda _: self.actualizar_boton_reclamar())
+        self.tabla.bind("<<TreeviewSelect>>", lambda _: self.actualizar_boton_accion())
 
         # Mensaje que reemplaza a la tabla cuando no hay resultados (regla del reto)
         self.sin_resultados = estilos.texto(self.marco_tabla, "", 13, color=estilos.TEXTO_SUAVE,
@@ -123,43 +131,49 @@ class PantallaListado(tk.Frame):
         self.tabla.delete(*self.tabla.get_children())
         encontrados = objetos.filtrar(self.app.datos, texto, categoria, estado)
         for objeto in encontrados:
-            accion = TEXTO_RECLAMAR if reclamos.puede_reclamar(objeto) else "—"
+            if self.es_admin:
+                accion = TEXTO_BORRAR
+            else:
+                accion = TEXTO_RECLAMAR if reclamos.puede_reclamar(objeto) else "—"
             self.tabla.insert("", "end", iid=str(objeto["id"]), tags=(objeto["estado"],), values=(
                 f"{objeto['id']:02d}", objeto["nombre"], objeto["categoria"], objeto["lugar"],
                 objeto["fecha_hallazgo"], "●  " + objeto["estado"], objeto["fecha_entrega"] or "—", accion))
 
         if encontrados:
             self.sin_resultados.place_forget()
-            self.mensaje.configure(text=f"{len(encontrados)} objeto(s). Doble clic para ver el detalle o pulsa "
-                                        f"«Reclamar» en un objeto disponible.", fg=estilos.TEXTO_SUAVE)
+            ayuda = "«Borrar» para quitar un objeto" if self.es_admin else "«Reclamar» en un objeto disponible"
+            self.mensaje.configure(text=f"{len(encontrados)} objeto(s). Doble clic para ver el detalle o pulsa {ayuda}.",
+                                   fg=estilos.TEXTO_SUAVE)
         else:
             filtros = objetos.describir_filtros(texto, categoria, estado)
             self.sin_resultados.configure(text=f"No se encontraron objetos con: {filtros}.\n"
                                                "Prueba con otro filtro o pulsa «Limpiar filtros».")
             self.sin_resultados.place(relx=0.5, rely=0.5, anchor="center")
             self.mensaje.configure(text="0 objetos.", fg=estilos.TEXTO_SUAVE)
-        self.actualizar_boton_reclamar()
+        self.actualizar_boton_accion()
 
     def objeto_seleccionado(self):
         seleccion = self.tabla.selection()
         return objetos.buscar_por_id(self.app.datos, int(seleccion[0])) if seleccion else None
 
-    def actualizar_boton_reclamar(self):
-        """El botón «Reclamar» solo se activa si el objeto seleccionado está Disponible."""
+    def actualizar_boton_accion(self):
+        """Se activa con un objeto seleccionado; «Reclamar» además exige que esté Disponible."""
         objeto = self.objeto_seleccionado()
-        if objeto and reclamos.puede_reclamar(objeto):
-            self.boton_reclamar.configure(state="normal", bg=estilos.AZUL, cursor="hand2")
+        activo = objeto is not None and (self.es_admin or reclamos.puede_reclamar(objeto))
+        if activo:
+            self.boton_accion.configure(state="normal", bg=self.color_accion, cursor="hand2")
         else:
-            estilos.desactivar(self.boton_reclamar)
+            estilos.desactivar(self.boton_accion)
 
     def clic_en_tabla(self, evento):
-        """Si se hace clic en «Reclamar ›» de la columna Acción, abre el formulario de reclamo."""
+        """Clic en la columna Acción: «Reclamar ›» abre el formulario; «Borrar ✕» (admin) borra el objeto."""
         fila = self.tabla.identify_row(evento.y)
         columna = self.tabla.identify_column(evento.x)
         if fila and columna == f"#{len(COLUMNAS)}":
-            objeto = objetos.buscar_por_id(self.app.datos, int(fila))
-            if reclamos.puede_reclamar(objeto):
-                self.app.mostrar("reclamo", objeto_id=objeto["id"])
+            if self.es_admin:
+                self.borrar()
+            elif reclamos.puede_reclamar(objetos.buscar_por_id(self.app.datos, int(fila))):
+                self.app.mostrar("reclamo", objeto_id=int(fila))
 
     def filtrar_por_estado(self, estado):
         """Clic en una tarjeta de conteo: muestra solo ese estado en todas las categorías."""
@@ -176,6 +190,18 @@ class PantallaListado(tk.Frame):
             self.mensaje.configure(text="Primero selecciona un objeto de la tabla.", fg=estilos.ERROR)
             return
         self.app.mostrar("detalle", objeto_id=objeto["id"])
+
+    def borrar(self):
+        """Solo administrador: quita el objeto del listado (pide confirmación)."""
+        objeto = self.objeto_seleccionado()
+        if not objeto or not messagebox.askyesno("Borrar objeto", f"¿Borrar «{objeto['nombre']}» del listado?"):
+            return
+        error = objetos.borrar_objeto(self.app.datos, objeto["id"])
+        if error:
+            self.mensaje.configure(text=error, fg=estilos.ERROR)
+            return
+        self.app.guardar()
+        self.app.mostrar("listado")  # se recarga para actualizar también los contadores
 
     def reclamar(self):
         objeto = self.objeto_seleccionado()

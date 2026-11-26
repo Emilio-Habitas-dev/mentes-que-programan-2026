@@ -1,5 +1,6 @@
 """Vista Detalle: ícono ilustrativo, información completa del objeto y botón «Reclamar objeto»."""
 import tkinter as tk
+from tkinter import messagebox
 
 from app import estilos
 from app.logica import objetos, reclamos
@@ -41,6 +42,15 @@ class PantallaDetalle(tk.Frame):
             estilos.texto(fila, f"{campo}:", 12, "bold").pack(side="left")
             estilos.texto(fila, valor, 12, wraplength=320).pack(side="left", padx=6)
 
+        # El administrador no reclama: en su lugar puede borrar el objeto del listado
+        if app.modo == "admin":
+            boton = estilos.boton_primario(derecha, "Borrar objeto del listado", lambda: self.borrar(app, objeto))
+            boton.configure(bg=estilos.ERROR, activebackground="#7F1D1D")
+            boton.pack(fill="x", pady=(18, 0))
+            self.mensaje = estilos.texto(derecha, "", 10, color=estilos.ERROR, wraplength=420)
+            self.mensaje.pack(anchor="w", pady=(6, 0))
+            return
+
         # Mensaje informativo y botón; la regla de si se puede reclamar está en logica/reclamos.py
         se_puede = reclamos.puede_reclamar(objeto)
         aviso = ("¿Reconoces este objeto como tuyo? Registra un reclamo con una seña particular "
@@ -55,3 +65,13 @@ class PantallaDetalle(tk.Frame):
         boton.pack(fill="x")
         if not se_puede:
             estilos.desactivar(boton)
+
+    def borrar(self, app, objeto):
+        if not messagebox.askyesno("Borrar objeto", f"¿Borrar «{objeto['nombre']}» del listado?"):
+            return
+        error = objetos.borrar_objeto(app.datos, objeto["id"])
+        if error:
+            self.mensaje.configure(text=error)
+            return
+        app.guardar()
+        app.mostrar("listado")

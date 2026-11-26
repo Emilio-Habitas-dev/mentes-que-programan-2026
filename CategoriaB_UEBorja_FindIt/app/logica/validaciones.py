@@ -3,6 +3,7 @@
 Devuelven un diccionario {campo: mensaje de error}. Si está vacío, todo está bien.
 """
 import re
+from datetime import date
 
 MIN_TEXTO = 10  # Regla del reto: la seña particular debe tener al menos 10 caracteres
 
@@ -82,3 +83,21 @@ def validar_reporte(nombre, apellido, correo, grado, paralelo, objeto, categoria
 def armar_curso(grado, paralelo):
     """Une grado y paralelo en un solo texto, ej. «2do BGU A». Un docente queda como «Docente»."""
     return grado if grado == DOCENTE else f"{grado} {paralelo}"
+
+
+def validar_objeto(nombre, categoria, lugar, fecha, descripcion):
+    """Objeto que registra el administrador. La fecha va como AAAA-MM-DD y no puede ser futura."""
+    errores = {}
+    if not nombre.strip():
+        errores["nombre"] = "Escribe el nombre del objeto."
+    if categoria not in CATEGORIAS:
+        errores["categoria"] = "Selecciona una categoría."
+    if not lugar.strip():
+        errores["lugar"] = "Escribe dónde se encontró."
+    try:
+        if date.fromisoformat(fecha.strip()) > date.today():
+            errores["fecha"] = "La fecha no puede ser futura."
+    except ValueError:
+        errores["fecha"] = "Usa el formato AAAA-MM-DD, por ejemplo 2026-11-26."
+    validar_texto_largo(descripcion, "descripcion", errores, "una descripción del objeto")
+    return errores

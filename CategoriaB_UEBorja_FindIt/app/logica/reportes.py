@@ -43,17 +43,8 @@ def _buscar(datos, reporte_id):
 def agregar_al_listado(datos, reporte_id):
     """Inspección recibió el objeto: se crea en el listado como Disponible con los datos del reporte."""
     reporte = _buscar(datos, reporte_id)
-    nuevo = {
-        "id": siguiente_id(datos["objetos"]),
-        "nombre": reporte["objeto"],
-        "categoria": reporte["categoria"],
-        "lugar": reporte["lugar"],
-        "fecha_hallazgo": reporte["fecha"],
-        "estado": objetos.DISPONIBLE,
-        "descripcion": reporte["descripcion"],
-        "fecha_entrega": None,
-    }
-    datos["objetos"].append(nuevo)
+    nuevo = objetos.crear_objeto(datos, reporte["objeto"], reporte["categoria"], reporte["lugar"],
+                                 reporte["fecha"], reporte["descripcion"])
     reporte["estado"] = AGREGADO
     reporte["objeto_id"] = nuevo["id"]
     return nuevo

@@ -20,3 +20,6 @@
 | 11:30 | Interfaz | Campo Correo (de preferencia institucional) en el reclamo; columna Correo en Solicitudes del administrador; campos alineados arriba. |
 | 11:40 | Lógica | Reportes ahora son de objetos **encontrados** (con correo institucional). `reportes.agregar_al_listado` crea el objeto Disponible con los datos del reporte; `descartar` lo cierra. |
 | 11:40 | Interfaz | Vista «Reportar objeto encontrado» (correo, dónde lo encontraste). Administrador: «Recibido: agregar al listado» y «Descartar», con columna Correo. Ventana un poco más alta (780 px). |
+| 11:46 | Lógica | `objetos.crear_objeto` (usado por el administrador y por los reportes), `registrar_objeto` con validación (fecha AAAA-MM-DD no futura) y `borrar_objeto` (bloqueado si hay reclamo pendiente). |
+| 11:46 | Interfaz | Administrador no puede reclamar: en listado y detalle el botón es «Borrar objeto» (rojo, con confirmación) y la columna Acción dice «Borrar ✕». Nuevo botón «+ Registrar objeto perdido» y vista `registrar_objeto.py` (solo datos del objeto). |
+| 11:52 | Interfaz | Tablas del administrador (Solicitudes y Reportes): panel inferior con la fila seleccionada completa, en dos columnas y con los textos largos en varias líneas. |

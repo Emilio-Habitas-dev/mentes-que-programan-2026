@@ -11,6 +11,7 @@ from app.pantallas.detalle import PantallaDetalle
 from app.pantallas.inicio import PantallaInicio
 from app.pantallas.listado import PantallaListado
 from app.pantallas.reclamo import PantallaReclamo
+from app.pantallas.registrar_objeto import PantallaRegistrarObjeto
 from app.pantallas.reportar import PantallaReportar
 
 # Nombre de cada vista -> clase que la dibuja
@@ -25,6 +26,7 @@ PANTALLAS = {
     "solicitudes": PantallaSolicitudes,
     "reportes": PantallaReportes,
     "reportar": PantallaReportar,
+    "registrar_objeto": PantallaRegistrarObjeto,
 }
 
 # Vistas que se muestran sin la barra superior (tienen su propio diseño de portada)

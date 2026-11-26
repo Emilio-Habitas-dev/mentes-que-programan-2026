@@ -36,7 +36,8 @@
 2. Botón «Reclamar» en la tabla (columna Acción) y abajo, solo activo si el objeto está Disponible.
 3. **Reportar objeto encontrado** (estudiante/profesor, con correo institucional) → el administrador, al recibirlo en Inspección, pulsa «Recibido: agregar al listado» y se crea como objeto Disponible con esos datos.
 4. Login de administrador de demostración: `prueba1` / `prueba-administrador`, contraseña oculta con puntos y botón Mostrar/Ocultar.
-5. Panel de administrador: solicitudes de reclamo (Entregar o Rechazar), reportes (marcar atendido), objetos, restablecer datos.
+5. Administrador **no reclama**: en el listado y el detalle puede **borrar** objetos (bloqueado si tienen reclamo pendiente) y **registrar objeto perdido** (objeto, categoría, lugar, fecha, descripción; sin datos de personas).
+6. Panel de administrador: solicitudes de reclamo (Entregar o Rechazar), reportes (marcar atendido), objetos, restablecer datos.
 
 
 
