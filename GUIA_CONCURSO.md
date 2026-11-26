@@ -14,6 +14,8 @@
 - **Stack acordado: Python** (el equipo lo domina; no conoce HTML/web). App de **escritorio con Tkinter** (viene con Python, no requiere instalar nada).
 - **Todo debe funcionar sin internet** ni servicios externos: sin APIs web, sin bases de datos en la nube, sin CDN, sin descargas en tiempo de ejecución. Datos guardados en archivos locales (JSON).
 - La **declaración de uso de IA (Anexo B) la redacta el equipo a mano**. No se llena automáticamente.
+- **Commits en GitHub:** no se hacen automáticamente. Se hacen solo cuando el equipo lo indique, a su criterio.
+- **Registro de cambios (`CHANGELOG.md`):** Claude lo mantiene en formato Markdown, siguiendo el plan de desarrollo (sección 5). Anota cada cambio estructural (carpetas, archivos, pantallas, módulos) y cada función o mejora añadida a la app, con fase del plan y una línea de descripción, para poder revisarlo. Se actualiza al terminar cada cambio, no solo al final.
 
 ### Reglas para escribir el código
 
@@ -52,6 +54,7 @@
 ```
 proyecto/
 ├── README.md              # Cómo ejecutar (python main.py) + resumen
+├── CHANGELOG.md           # Registro de cambios estructurales y funciones añadidas
 ├── main.py                # Punto de entrada: crea la ventana y arranca la app
 ├── docs/
 │   ├── plan.md            # Plan de desarrollo (se crea y se ajusta con el reto)
@@ -82,6 +85,8 @@ Patrón habitual en este tipo de reto (ejemplo oficial "Servicios estudiantiles"
 | 8. Pruebas | Pruebas + usabilidad + extras si sobra tiempo | Lista de pruebas |
 | 9. Cierre | README, ficha, entrega (la declaración de IA la redacta el equipo) | Todo entregado |
 
+**`docs/plan.md` es obligatorio y debe incluir:** requisitos del reto (lista para marcar al final), MVP y extras, pantallas, y quién hace qué entre los integrantes.
+
 Reglas: **primero el MVP funcionando**; los extras solo después. Con el tiempo limitado, recortar alcance antes que dejar algo a medias.
 
 ## 6. Defensa (máx. 11 min)
@@ -96,6 +101,7 @@ Reglas: **primero el MVP funcionando**; los extras solo después. Con el tiempo 
 ## 7. Checklist final antes de entregar
 
 - [ ] Se creó el plan de desarrollo (`docs/plan.md`) y se siguió.
+- [ ] `CHANGELOG.md` está al día con los cambios y funciones de la app.
 - [ ] La app arranca sin internet, solo con `python main.py`, y todo está en una sola carpeta lista para entregar (medio confirmado).
 - [ ] Todas las pantallas del mapa existen y se navega entre ellas.
 - [ ] Formularios validan (campos vacíos, formato, mensajes claros).
