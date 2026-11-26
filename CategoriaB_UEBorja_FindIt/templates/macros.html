@@ -1,0 +1,17 @@
+{# Campo de formulario reutilizable: etiqueta con *, control y mensaje de error #}
+{% macro campo(nombre, etiqueta, valores, errores, tipo="texto", opciones=[], ancho=False, extra="") %}
+<div class="campo {% if ancho %}ancho{% endif %} {% if errores.get(nombre) %}con-error{% endif %}">
+  <label for="{{ nombre }}">{{ etiqueta }} <span class="ob">*</span></label>
+  {% if tipo == "lista" %}
+    <select id="{{ nombre }}" name="{{ nombre }}" {{ extra }}>
+      <option value="">— Selecciona —</option>
+      {% for o in opciones %}<option {% if valores.get(nombre) == o %}selected{% endif %}>{{ o }}</option>{% endfor %}
+    </select>
+  {% elif tipo == "area" %}
+    <textarea id="{{ nombre }}" name="{{ nombre }}" rows="3" placeholder="Mínimo 10 caracteres">{{ valores.get(nombre, '') }}</textarea>
+  {% else %}
+    <input id="{{ nombre }}" name="{{ nombre }}" type="{{ 'password' if tipo == 'clave' else 'text' }}" value="{{ valores.get(nombre, '') }}" {{ extra }}>
+  {% endif %}
+  {% if errores.get(nombre) %}<div class="err">{{ errores[nombre] }}</div>{% endif %}
+</div>
+{% endmacro %}

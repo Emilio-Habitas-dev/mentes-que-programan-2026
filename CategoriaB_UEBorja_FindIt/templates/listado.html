@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block contenido %}
+{% if es_admin %}<a class="volver" href="{{ url_for('panel') }}">← Volver al panel</a>{% endif %}
+<div class="fila">
+  <div>
+    <h1>Objetos encontrados</h1><p class="sub">Explora y busca entre los objetos encontrados en Inspección.</p>
+    {% if es_admin %}<a class="boton marino" href="{{ url_for('registrar_objeto') }}">+ Registrar objeto perdido</a>
+    {% else %}<a class="boton marino" href="{{ url_for('reportar') }}">+ Reportar objeto encontrado</a>{% endif %}
+  </div>
+  <div class="conteos">  {# Al hacer clic en una tarjeta se filtra por ese estado #}
+    <a class="conteo" href="{{ url_for('listado') }}">Total<b>{{ conteo['Total'] }}</b></a>
+    <a class="conteo" href="{{ url_for('listado', estado='Disponible') }}">Disponibles<b style="color:var(--disp)">{{ conteo['Disponible'] }}</b></a>
+    <a class="conteo" href="{{ url_for('listado', estado='Reclamado') }}">Reclamados<b style="color:var(--recl)">{{ conteo['Reclamado'] }}</b></a>
+    <a class="conteo" href="{{ url_for('listado', estado='Entregado') }}">Entregados<b style="color:var(--entr)">{{ conteo['Entregado'] }}</b></a>
+  </div>
+</div>
+<form class="filtros" method="get">
+  <b>Buscar:</b><input name="q" value="{{ q }}" placeholder="Nombre, lugar o descripción">
+  <b>Categoría:</b><select name="categoria" onchange="this.form.submit()"><option>Todas</option>
+    {% for c in categorias %}<option {% if c == categoria %}selected{% endif %}>{{ c }}</option>{% endfor %}</select>
+  <b>Estado:</b><select name="estado" onchange="this.form.submit()"><option>Todos</option>
+    {% for e in estados %}<option {% if e == estado %}selected{% endif %}>{{ e }}</option>{% endfor %}</select>
+  <button class="boton">Buscar</button><a class="boton sec" href="{{ url_for('listado') }}">Limpiar filtros</a>
+</form>
+<div class="tabla-caja">
+{% if objetos_lista %}
+<table>
+  <tr><th>ID</th><th>Objeto</th><th>Categoría</th><th>Lugar del hallazgo</th><th>Fecha hallazgo</th><th>Estado</th><th>Fecha entrega</th><th>Acción</th></tr>
+  {% for o in objetos_lista %}
+  <tr class="{{ o.estado }}">
+    <td>{{ '%02d' % o.id }}</td><td><a href="{{ url_for('detalle', objeto_id=o.id) }}">{{ o.nombre }}</a></td>
+    <td>{{ o.categoria }}</td><td>{{ o.lugar }}</td><td>{{ o.fecha_hallazgo }}</td>
+    <td><span class="chip {{ o.estado }}">{{ o.estado }}</span></td><td>{{ o.fecha_entrega or '—' }}</td>
+    <td>
+      {% if es_admin %}
+        <form method="post" action="{{ url_for('borrar', objeto_id=o.id) }}" onsubmit="return confirm('¿Borrar «{{ o.nombre }}» del listado?')">
+          <button class="boton rojo" style="padding:5px 10px">Borrar ✕</button></form>
+      {% elif puede_reclamar(o) %}<a class="boton" style="padding:5px 10px" href="{{ url_for('reclamar', objeto_id=o.id) }}">Reclamar ›</a>
+      {% else %}—{% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<div class="vacio">No se encontraron objetos con: {{ filtros }}.<br>Prueba con otro filtro o pulsa «Limpiar filtros».</div>
+{% endif %}
+</div>
+<p class="sub">{{ objetos_lista|length }} objeto(s). Haz clic en el nombre para ver el detalle.</p>
+{% endblock %}

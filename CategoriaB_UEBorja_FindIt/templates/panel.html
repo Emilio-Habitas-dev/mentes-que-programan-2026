@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>¡Bienvenido/a, Administrador/a!</h1><p class="sub">Elige qué quieres gestionar.</p>
+<div class="panel">
+  <a href="{{ url_for('solicitudes') }}"><span class="insignia" id="insignia-solicitudes">{{ solicitudes }}</span><span class="icono-panel">✉</span><b>Revisar solicitudes de reclamo</b>Coordina la hora de entrega, entrega o rechaza.</a>
+  <a href="{{ url_for('admin_reportes') }}"><span class="insignia" id="insignia-reportes">{{ reportes_pendientes }}</span><span class="icono-panel">!</span><b>Revisar reportes de objetos encontrados</b>Publica en el listado lo que reportaron.</a>
+  <a href="{{ url_for('listado') }}"><span class="icono-panel">✎</span><b>Revisar objetos encontrados</b>Tabla completa: registra o borra objetos.</a>
+  <form method="post" action="{{ url_for('restablecer') }}" onsubmit="return confirm('¿Volver a los 10 objetos de prueba? Se borran reclamos, reportes, cuentas y mensajes.')">
+    <button class="tarjeta" style="width:100%;text-align:left;cursor:pointer;min-height:230px;font:inherit;padding:36px;font-size:1.1rem"><span class="icono-panel">⚙</span><b style="display:block;font-size:26px;margin:8px 0">Opciones</b>Restablecer los 10 objetos de prueba.</button></form>
+</div>
+{% endblock %}

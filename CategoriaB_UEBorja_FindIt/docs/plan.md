@@ -40,7 +40,8 @@
 6. **Cuentas**: estudiantes y profesores crean su cuenta (nombre, apellido, rol, grado o grado en que da clases, paralelo, correo institucional, contraseña cifrada) e inician sesión; los formularios se llenan solos.
 7. **Buzón ✉** (contador de no leídos): «Tu reporte fue publicado», «¡Encontramos al dueño! Entrégalo en el edificio administrativo a las HH:MM», «Tu reclamo fue aprobado…», «Reclamo rechazado».
 8. **Foto** opcional (PNG o GIF) en el reporte; se muestra en el detalle del objeto.
-9. Panel de administrador: solicitudes de reclamo (Entregar o Rechazar), reportes (marcar atendido), objetos, restablecer datos.
+9. **Versión web (Flask)**: `web.py` + `templates/` reutilizan la misma lógica y datos; servidor local accesible desde otros equipos de la red (`http://IP:5000`).
+10. Panel de administrador: solicitudes de reclamo (Entregar o Rechazar), reportes (marcar atendido), objetos, restablecer datos.
 
 
 

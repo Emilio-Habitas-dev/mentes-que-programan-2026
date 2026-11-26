@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block contenido %}
+<form class="tarjeta formulario" method="post" style="max-width:420px;margin-top:30px">
+  <h1 style="text-align:center">¡Bienvenido/a, Administrador/a!</h1>
+  <div class="campo"><label>Nombre de usuario</label><input name="usuario" autofocus></div>
+  <div class="campo" style="margin-top:10px"><label>Contraseña</label>
+    <div class="fila" style="gap:8px;flex-wrap:nowrap"><input id="clave" name="clave" type="password">
+    <button type="button" class="boton sec" onclick="const c=document.getElementById('clave'); const ver=c.type==='password'; c.type=ver?'text':'password'; this.textContent=ver?'Ocultar':'Mostrar'">Mostrar</button></div></div>
+  {% if error %}<p class="aviso error">{{ error }}</p>{% endif %}
+  <div class="acciones"><button class="boton marino" style="width:100%">Iniciar sesión</button></div>
+  <p style="text-align:center"><a class="volver" href="{{ url_for('inicio') }}">← Volver al inicio</a></p>
+</form>
+{% endblock %}

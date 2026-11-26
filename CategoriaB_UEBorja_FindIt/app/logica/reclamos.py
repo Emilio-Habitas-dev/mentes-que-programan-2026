@@ -65,8 +65,8 @@ def coordinar_entrega(datos, reclamo_id, hora):
     reclamo["hora_entrega"] = hora.strip()
     lugar = f"{mensajes.LUGAR_ENTREGA} a las {hora.strip()}"
     mensajes.enviar(datos, reclamo.get("usuario_id"), "Tu reclamo fue aprobado",
-                    f"¡Listo! Confirmamos que «{objeto['nombre']}» es tuyo. Retíralo en {lugar}. "
-                    "Lleva tu seña particular.")
+                    f"¡Listo! Tu reclamo de «{objeto['nombre']}» fue aprobado. Retíralo en {lugar}. "
+                    "Al retirarlo te pediremos describir la seña particular del objeto para confirmar que es tuyo.")
     mensajes.enviar(datos, objeto.get("reportado_por"), "¡Encontramos al dueño!",
                     f"¡Listo, encontramos al dueño de «{objeto['nombre']}»! Entrégalo en {lugar}. "
                     "Gracias por ayudar.")

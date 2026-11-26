@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% from "macros.html" import campo %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('detalle', objeto_id=objeto.id) }}">← Volver al detalle</a>
+<form class="tarjeta formulario" method="post">
+  <h1>Formulario de reclamo</h1>
+  <div class="info">{{ objeto.nombre }} · {{ objeto.lugar }} · {{ objeto.fecha_hallazgo }}</div>
+  <div class="campos">
+    {{ campo("nombre", "Nombre", valores, errores) }}
+    {{ campo("apellido", "Apellido", valores, errores) }}
+    {{ campo("correo", "Correo (de preferencia institucional)", valores, errores, ancho=True) }}
+    {{ campo("grado", "Grado", valores, errores, "lista", grados) }}
+    {{ campo("paralelo", "Paralelo", valores, errores, "lista", paralelos) }}
+    {{ campo("sena", "Seña particular del objeto", valores, errores, "area", ancho=True) }}
+  </div>
+  <p class="sub">Si eres docente no necesitas paralelo.</p>
+  <div class="acciones"><a class="boton sec" href="{{ url_for('detalle', objeto_id=objeto.id) }}">Cancelar</a><button class="boton">Enviar reclamo</button></div>
+</form>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% from "macros.html" import campo %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('listado') }}">← Volver al listado</a>
+<form class="tarjeta formulario" method="post">
+  <h1>Registrar objeto perdido</h1><p class="sub">El objeto se agrega al listado como Disponible.</p>
+  <div class="campos">
+    {{ campo("nombre", "Objeto", valores, errores) }}
+    {{ campo("categoria", "Categoría", valores, errores, "lista", categorias) }}
+    {{ campo("lugar", "Lugar del hallazgo", valores, errores) }}
+    {{ campo("fecha", "Fecha del hallazgo (AAAA-MM-DD)", valores, errores) }}
+    {{ campo("descripcion", "Descripción", valores, errores, "area", ancho=True) }}
+  </div>
+  <div class="acciones"><a class="boton sec" href="{{ url_for('listado') }}">Cancelar</a><button class="boton">Registrar objeto</button></div>
+</form>
+{% endblock %}

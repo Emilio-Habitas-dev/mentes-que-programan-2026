@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('panel') }}">← Volver al panel</a>
+<h1>Reportes de objetos encontrados</h1><p class="sub">Revisa el reporte y publícalo en el listado; quien lo encontró recibe un mensaje.</p>
+{% if aviso %}<p class="aviso">{{ aviso }}</p>{% endif %}
+<div class="tabla-caja">
+{% if lista %}
+<table>
+  <tr><th>Foto</th><th>Objeto</th><th>Categoría</th><th>Dónde</th><th>Descripción</th><th>Reportado por</th><th>Correo</th><th>Acciones</th></tr>
+  {% for r in lista %}
+  <tr><td>{% if r.foto %}<img src="{{ url_for('foto', nombre=r.foto) }}" style="width:70px">{% else %}—{% endif %}</td>
+    <td>{{ r.objeto }}</td><td>{{ r.categoria }}</td><td>{{ r.lugar }}</td><td>{{ r.descripcion }}</td>
+    <td>{{ r.nombre }} {{ r.apellido }} ({{ r.curso }})</td><td>{{ r.correo }}</td>
+    <td><form method="post" class="fila" style="gap:6px"><input type="hidden" name="reporte_id" value="{{ r.id }}">
+      <button class="boton" name="accion" value="publicar">Publicar en el listado</button>
+      <button class="boton sec" name="accion" value="descartar" onclick="return confirm('¿Descartar este reporte?')">Descartar</button></form></td></tr>
+  {% endfor %}
+</table>
+{% else %}<div class="vacio">No hay reportes pendientes.</div>{% endif %}
+</div>
+{% endblock %}

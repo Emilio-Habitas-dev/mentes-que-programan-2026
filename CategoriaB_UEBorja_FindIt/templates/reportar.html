@@ -1,0 +1,25 @@
+{% extends "base.html" %}{% from "macros.html" import campo %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('listado') }}">← Volver al listado</a>
+<form class="tarjeta formulario" method="post" enctype="multipart/form-data">
+  <h1>Reportar objeto encontrado</h1>
+  <p class="sub">¿Encontraste algo? Repórtalo y guárdalo: cuando aparezca el dueño te avisaremos en ✉ la hora de entrega en el edificio administrativo.</p>
+  <div class="campos">
+    {{ campo("nombre", "Nombre", valores, errores) }}
+    {{ campo("apellido", "Apellido", valores, errores) }}
+    {{ campo("correo", "Correo institucional", valores, errores, ancho=True) }}
+    {{ campo("grado", "Grado", valores, errores, "lista", grados) }}
+    {{ campo("paralelo", "Paralelo", valores, errores, "lista", paralelos) }}
+    {{ campo("objeto", "Objeto encontrado", valores, errores) }}
+    {{ campo("categoria", "Categoría", valores, errores, "lista", categorias) }}
+    {{ campo("lugar", "Dónde lo encontraste", valores, errores, ancho=True) }}
+    {{ campo("descripcion", "Descripción del objeto", valores, errores, "area", ancho=True) }}
+    <div class="campo ancho {% if errores.get('foto') %}con-error{% endif %}">
+      <label for="foto">Foto del objeto (opcional)</label>
+      <input id="foto" type="file" name="foto" accept="image/*">
+      {% if errores.get('foto') %}<div class="err">{{ errores.foto }}</div>{% endif %}
+    </div>
+  </div>
+  <div class="acciones"><a class="boton sec" href="{{ url_for('listado') }}">Cancelar</a><button class="boton">Enviar reporte</button></div>
+</form>
+{% endblock %}

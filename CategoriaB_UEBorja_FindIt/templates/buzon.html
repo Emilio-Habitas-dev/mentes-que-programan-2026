@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('listado') }}">← Volver al listado</a>
+<h1>✉ Mis mensajes</h1>
+<div class="buzon">
+  <div class="tarjeta" style="padding:8px">
+    {% for m in lista %}<a class="msj {% if not m.leido %}nuevo{% endif %}" href="{{ url_for('buzon', mensaje_id=m.id) }}">{{ m.titulo }}<br><small style="color:var(--suave)">{{ m.fecha }}</small></a>
+    {% else %}<p class="sub" style="padding:10px">No tienes mensajes todavía.</p>{% endfor %}
+  </div>
+  <div class="tarjeta">
+    {% if abierto %}<h2>{{ abierto.titulo }}</h2><p class="sub">{{ abierto.fecha }}</p><p style="font-size:17px">{{ abierto.texto }}</p>
+    {% else %}<p class="sub">Elige un mensaje. Aquí te avisaremos cuando publiquemos tu reporte o encontremos al dueño, con la hora de entrega en el edificio administrativo.</p>{% endif %}
+  </div>
+</div>
+{% endblock %}

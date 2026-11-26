@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('panel') }}">← Volver al panel</a>
+<h1>Solicitudes de reclamo</h1><p class="sub">Compara la seña: coordina la hora de entrega (avisa al dueño y a quien lo encontró), luego márcalo entregado.</p>
+{% if aviso %}<p class="aviso {% if error %}error{% endif %}">{{ aviso }}</p>{% endif %}
+<div class="tabla-caja">
+{% if filas %}
+<table>
+  <tr><th>Objeto</th><th>Reclamado por</th><th>Correo</th><th>Curso</th><th>Seña particular</th><th>Estado</th><th>Acciones</th></tr>
+  {% for r, o in filas %}
+  <tr><td>{{ o.nombre }}</td><td>{{ r.nombre }} {{ r.apellido }}</td><td>{{ r.correo }}</td><td>{{ r.curso }}</td><td>{{ r.sena }}</td>
+    <td>{% if r.estado == coordinado %}Entrega {{ r.hora_entrega }}{% else %}Pendiente{% endif %}</td>
+    <td>
+      <form method="post" class="fila" style="gap:6px">
+        <input type="hidden" name="reclamo_id" value="{{ r.id }}">
+        <input name="hora" placeholder="HH:MM" style="width:80px">
+        <button class="boton sec" name="accion" value="coordinar">Coordinar entrega</button>
+        <button class="boton" name="accion" value="entregar">Entregado</button>
+        <button class="boton rojo" name="accion" value="rechazar" onclick="return confirm('¿Rechazar el reclamo?')">Rechazar</button>
+      </form>
+    </td></tr>
+  {% endfor %}
+</table>
+{% else %}<div class="vacio">No hay solicitudes pendientes. Aparecerán aquí cuando alguien reclame un objeto.</div>{% endif %}
+</div>
+{% endblock %}

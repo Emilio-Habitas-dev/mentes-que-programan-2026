@@ -55,6 +55,19 @@ class Ventana:
         self.contenido = tk.Frame(root, bg=estilos.FONDO)
         self.contenido.pack(fill="both", expand=True)
         self.mostrar("inicio")
+        self.sondear_mensajes()
+
+    def sondear_mensajes(self):
+        """Cada 4 segundos lee el archivo y actualiza el número del ícono ✉ (mensajes que llegan
+        desde otra ventana o desde la versión web aparecen sin tener que cambiar de pantalla)."""
+        if self.usuario and self.modo != "admin":
+            try:
+                pendientes = mensajes.no_leidos(datos.cargar(), self.usuario["id"])
+                self.boton_buzon.configure(text=f"✉  {pendientes}" if pendientes else "✉",
+                                           bg=estilos.AMARILLO if pendientes else estilos.BLANCO)
+            except (OSError, ValueError):
+                pass  # el archivo se estaba escribiendo: se reintenta en la próxima vuelta
+        self.root.after(4000, self.sondear_mensajes)
 
     def _crear_barra(self):
         """Barra blanca superior: logo FIND IT a la izquierda; modo y botón de rol a la derecha."""

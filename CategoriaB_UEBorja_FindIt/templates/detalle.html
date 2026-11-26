@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('listado') }}">← Volver al listado</a>
+<div class="dos">
+  <div class="tarjeta" style="text-align:center">
+    <div style="text-align:right"><span class="chip" style="background:var(--marino)">ID #{{ '%02d' % objeto.id }}</span></div>
+    {% if objeto.foto %}<img class="foto" src="{{ url_for('foto', nombre=objeto.foto) }}" alt="Foto de {{ objeto.nombre }}">
+    {% else %}<div class="icono {{ objeto.categoria }}">{{ objeto.categoria[0] }}</div>{% endif %}
+    <b style="color:var(--suave)">{{ objeto.categoria }}</b>
+  </div>
+  <div class="tarjeta">
+    <span class="chip {{ objeto.estado }}">{{ objeto.estado }}</span>
+    <h1>{{ objeto.nombre }}</h1>
+    <p><b>Categoría:</b> {{ objeto.categoria }}</p>
+    <p><b>Lugar del hallazgo:</b> {{ objeto.lugar }}</p>
+    <p><b>Fecha del hallazgo:</b> {{ objeto.fecha_hallazgo }}</p>
+    <p><b>Descripción:</b> {{ objeto.descripcion }}</p>
+    {% if objeto.fecha_entrega %}<p><b>Fecha de entrega:</b> {{ objeto.fecha_entrega }}</p>{% endif %}
+    {% if es_admin %}
+      {% if error %}<p class="aviso error">{{ error }}</p>{% endif %}
+      <form method="post" action="{{ url_for('borrar', objeto_id=objeto.id) }}" onsubmit="return confirm('¿Borrar este objeto del listado?')">
+        <button class="boton rojo" style="width:100%">Borrar objeto del listado</button></form>
+    {% else %}
+      <div class="info">ⓘ {% if se_puede %}¿Reconoces este objeto como tuyo? Registra un reclamo con una seña particular para validarlo.{% else %}Este objeto ya está {{ objeto.estado }}, por eso no se puede reclamar.{% endif %}</div>
+      {% if se_puede %}<a class="boton" style="display:block;text-align:center" href="{{ url_for('reclamar', objeto_id=objeto.id) }}">Reclamar objeto</a>
+      {% else %}<button class="boton" style="width:100%" disabled>Reclamar objeto</button>{% endif %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

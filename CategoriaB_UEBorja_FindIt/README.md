@@ -14,6 +14,20 @@ python main.py        # en Linux puede ser: python3 main.py
 
 > En Linux, si falta Tkinter: `sudo apt install python3-tk`.
 
+## Versión web (Flask)
+
+Usa la misma lógica (`app/logica/`) y los mismos datos (`data/`) que la versión de escritorio; solo cambia la interfaz (`web.py`, `templates/`, `static/`).
+
+```bash
+pip install -r requirements.txt     # instala Flask (una sola vez)
+python web.py                       # abre el servidor
+```
+
+- En este equipo: **http://localhost:5000**
+- Otro equipo en la **misma red wifi**: **http://IP-de-este-equipo:5000** (la IP se ve con `hostname -I` en Linux o `ipconfig` en Windows).
+- Si no conecta, el cortafuegos puede estar bloqueando: en Ubuntu `sudo ufw allow 5000/tcp`.
+- Para detener el servidor: `Ctrl + C` en la terminal.
+
 ## Cómo usar
 
 - **Estudiante o profesor:** crea su cuenta con su correo institucional (debe contener `.edu`) e inicia sesión. Ve el listado, busca o filtra, reclama un objeto Disponible o reporta uno que encontró (con foto PNG/GIF opcional). Los avisos llegan al buzón ✉.

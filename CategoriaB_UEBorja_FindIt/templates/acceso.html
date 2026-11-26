@@ -1,0 +1,44 @@
+{% extends "base.html" %}{% from "macros.html" import campo %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('inicio') }}">← Volver al inicio</a>
+<h1>Bienvenido/a a FIND IT</h1><p class="sub">Inicia sesión o crea tu cuenta con tu correo institucional.</p>
+<div class="fila">
+  <form class="tarjeta" method="post" style="flex:2;min-width:280px">
+    <h2>Iniciar sesión</h2>
+    <input type="hidden" name="accion" value="login">
+    <div class="campo"><label>Correo institucional</label><input name="correo"></div>
+    <div class="campo" style="margin-top:10px"><label>Contraseña</label><input name="clave" type="password" class="clave"></div>
+    {% if error_login %}<p class="aviso error">{{ error_login }}</p>{% endif %}
+    <div class="acciones"><button class="boton">Iniciar sesión</button></div>
+  </form>
+  <form class="tarjeta" method="post" style="flex:3;min-width:320px">
+    <h2>Crear cuenta</h2>
+    <input type="hidden" name="accion" value="registro">
+    <div class="campos">
+      {{ campo("nombre", "Nombre", valores, errores) }}
+      {{ campo("apellido", "Apellido", valores, errores) }}
+      {{ campo("rol", "Soy", valores, errores, "lista", roles) }}
+      {{ campo("grado_clase", "Grado en que das clases (profesores)", valores, errores, "lista", grados) }}
+      {{ campo("grado", "Grado (estudiantes)", valores, errores, "lista", grados) }}
+      {{ campo("paralelo", "Paralelo (estudiantes)", valores, errores, "lista", paralelos) }}
+      {{ campo("correo", "Correo institucional", valores, errores, ancho=True) }}
+      {{ campo("clave", "Contraseña (mín. 6)", valores, errores, "clave") }}
+      {{ campo("confirmar", "Repite la contraseña", valores, errores, "clave") }}
+    </div>
+    <label><input type="checkbox" style="width:auto" onclick="document.querySelectorAll('input[type=password],input.clave').forEach(c => c.type = this.checked ? 'text' : 'password')"> Mostrar contraseñas</label>
+    <div class="acciones"><button class="boton">Crear cuenta</button></div>
+  </form>
+</div>
+<script>
+  // Según el rol se activan solo los campos que aplican (estudiante: grado y paralelo; profesor: grado en que da clases)
+  const rol = document.getElementById("rol");
+  function actualizarRol() {
+    const profesor = rol.value === "Profesor";
+    document.getElementById("grado_clase").disabled = !profesor;
+    document.getElementById("grado").disabled = profesor;
+    document.getElementById("paralelo").disabled = profesor;
+  }
+  if (!rol.value) rol.value = "Estudiante";
+  rol.addEventListener("change", actualizarRol); actualizarRol();
+</script>
+{% endblock %}

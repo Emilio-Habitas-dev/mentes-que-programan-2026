@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FIND IT · Objetos perdidos y encontrados</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+  {# Barra superior: logo, quién está conectado, buzón y cerrar sesión #}
+  <header class="barra">
+    <a class="logo" href="{{ url_for('listado') }}">🔍 FIND IT</a>
+    {% if es_admin %}
+      <span class="pastilla">Modo: Administrador</span>
+    {% elif usuario %}
+      <span class="pastilla">{{ usuario.nombre }} {{ usuario.apellido }} · {{ descripcion_usuario }}</span>
+      <a id="buzon" class="boton sec mail {% if no_leidos %}nuevo{% endif %}" href="{{ url_for('buzon') }}">✉ <span id="no-leidos">{{ no_leidos or '' }}</span></a>
+    {% endif %}
+    <a class="boton sec" href="{{ url_for('salir') }}">Cerrar sesión</a>
+  </header>
+  <main class="contenido">{% block contenido %}{% endblock %}</main>
+  <script>
+    // Notificaciones en vivo: cada 4 segundos se pregunta al servidor cuántos mensajes y solicitudes hay
+    function actualizarNotificaciones() {
+      fetch("{{ url_for('notificaciones') }}").then(r => r.json()).then(n => {
+        const numero = document.getElementById("no-leidos");
+        if (numero) {
+          numero.textContent = n.no_leidos || "";
+          document.getElementById("buzon").classList.toggle("nuevo", n.no_leidos > 0);
+        }
+        const s = document.getElementById("insignia-solicitudes"), r = document.getElementById("insignia-reportes");
+        if (s) s.textContent = n.solicitudes;
+        if (r) r.textContent = n.reportes;
+      }).catch(() => {});
+    }
+    setInterval(actualizarNotificaciones, 4000);
+  </script>
+</body>
+</html>
