@@ -1,0 +1,49 @@
+# Construye el ejecutable de FIND IT (versión web) para Windows, Linux y macOS con PyInstaller.
+# Al abrir el ejecutable se levanta el servidor local y se abre el navegador en http://localhost:5000
+name: Ejecutables FIND IT
+
+on:
+  push:
+    branches: [main]
+    paths: ["CategoriaB_UEBorja_FindIt/**", ".github/workflows/ejecutables.yml"]
+  workflow_dispatch:  # también se puede lanzar a mano desde la pestaña Actions
+
+jobs:
+  construir:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            nombre: FindIt-Windows
+          - os: ubuntu-latest
+            nombre: FindIt-Linux
+          - os: macos-latest
+            nombre: FindIt-macOS
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: CategoriaB_UEBorja_FindIt
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt pyinstaller
+      - name: Construir ejecutable
+        run: >
+          pyinstaller --onefile --name FindIt --noconfirm
+          --add-data "templates:templates" --add-data "static:static"
+          --add-data "data/datos_iniciales.json:data" --add-data "data/credenciales_demo.json:data"
+          web.py
+      - name: Preparar paquete
+        shell: bash
+        run: |
+          mkdir paquete
+          cp dist/FindIt* paquete/
+          cp README.md paquete/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.nombre }}
+          path: CategoriaB_UEBorja_FindIt/paquete

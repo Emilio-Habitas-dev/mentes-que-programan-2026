@@ -5,10 +5,22 @@
 """
 import json
 import shutil
+import sys
 from pathlib import Path
 
 # Rutas calculadas desde este archivo: funciona en cualquier carpeta o equipo
 CARPETA_DATOS = Path(__file__).resolve().parent.parent / "data"
+
+if getattr(sys, "frozen", False):
+    # Ejecutable (PyInstaller): los datos se guardan en una carpeta «data» junto al ejecutable,
+    # porque dentro del ejecutable no se puede escribir. La primera vez se copian los archivos iniciales.
+    empaquetados = Path(sys._MEIPASS) / "data"
+    CARPETA_DATOS = Path(sys.executable).resolve().parent / "data"
+    CARPETA_DATOS.mkdir(exist_ok=True)
+    for nombre in ("datos_iniciales.json", "credenciales_demo.json"):
+        if not (CARPETA_DATOS / nombre).exists():
+            shutil.copyfile(empaquetados / nombre, CARPETA_DATOS / nombre)
+
 RUTA_INICIALES = CARPETA_DATOS / "datos_iniciales.json"
 RUTA_DATOS = CARPETA_DATOS / "datos.json"
 RUTA_CREDENCIALES = CARPETA_DATOS / "credenciales_demo.json"

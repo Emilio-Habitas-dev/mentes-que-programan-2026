@@ -35,3 +35,4 @@
 | 13:42 | Lógica/Web | Coordinar entrega con fecha (no pasada), hora y lugar (por defecto el edificio administrativo), en escritorio y web; mensajes con la fecha exacta. Web: Opciones del administrador (cambiar nombre, usuario y contraseña pidiendo la actual y repitiendo la nueva; se guarda cifrada) y Administrar usuarios (fecha de registro, editar datos/contraseña, borrar cuenta). |
 | 13:44 | Interfaz/Web | Quitado el texto «N objetos disponibles para reclamar» del Inicio (escritorio y web). |
 | 13:52 | Interfaz/Web | Quitada la opción «Restablecer datos» (no es adecuada para una app real) en web y escritorio. |
+| 13:57 | Entrega | Ejecutables con GitHub Actions + PyInstaller (Windows, Linux, macOS): abren el servidor local y el navegador; datos junto al ejecutable; puerto configurable (PUERTO). Probado localmente en Linux. |

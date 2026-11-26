@@ -349,6 +349,25 @@ def admin_usuarios():
                            descripcion=usuarios.descripcion)
 
 
+def direcciones():
+    """IP de este equipo en la red, para que otros puedan entrar."""
+    import socket
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as prueba:
+            prueba.connect(("10.255.255.255", 1))  # no envía nada: solo averigua la IP de la red local
+            return prueba.getsockname()[0]
+    except OSError:
+        return "127.0.0.1"
+
+
 if __name__ == "__main__":
+    import os
+    import threading
+    import webbrowser
+    puerto = int(os.environ.get("PUERTO", 5000))  # se puede cambiar, ej.: PUERTO=5050
+    print("\n  FIND IT está funcionando. No cierres esta ventana.")
+    print(f"  En este equipo:        http://localhost:{puerto}")
+    print(f"  Desde la misma red:    http://{direcciones()}:{puerto}\n")
+    threading.Timer(1.5, lambda: webbrowser.open(f"http://localhost:{puerto}")).start()  # abre el navegador solo
     # host="0.0.0.0": acepta conexiones de otros equipos de la misma red (no solo de este)
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=puerto, debug=False)

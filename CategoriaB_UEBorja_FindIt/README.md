@@ -28,6 +28,16 @@ python web.py                       # abre el servidor
 - Si no conecta, el cortafuegos puede estar bloqueando: en Ubuntu `sudo ufw allow 5000/tcp`.
 - Para detener el servidor: `Ctrl + C` en la terminal.
 
+## Ejecutables (Windows, Linux y macOS)
+
+GitHub Actions (`.github/workflows/ejecutables.yml`) construye un ejecutable de la versión web con PyInstaller en cada `push` a `main`.
+Se descargan en GitHub → pestaña **Actions** → la última ejecución → **Artifacts** (`FindIt-Windows`, `FindIt-Linux`, `FindIt-macOS`).
+
+- Al abrir el ejecutable se inicia el servidor y se abre el navegador en `http://localhost:5000`. No cierres la ventana de la terminal.
+- Los datos se guardan en una carpeta `data/` junto al ejecutable.
+- Linux/macOS: dar permiso con `chmod +x FindIt`. En macOS, la primera vez: clic derecho → Abrir.
+- Otro puerto: `PUERTO=5050 ./FindIt`.
+
 ## Cómo usar
 
 - **Estudiante o profesor:** crea su cuenta con su correo institucional (debe contener `.edu`) e inicia sesión. Ve el listado, busca o filtra, reclama un objeto Disponible o reporta uno que encontró (con foto PNG/GIF opcional). Los avisos llegan al buzón ✉.
