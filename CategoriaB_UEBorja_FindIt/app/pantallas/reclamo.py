@@ -25,24 +25,27 @@ class PantallaReclamo(tk.Frame):
         estilos.texto(resumen, f"{self.objeto['nombre']}  ·  {self.objeto['lugar']}  ·  "
                                f"{self.objeto['fecha_hallazgo']}", 11, fondo=estilos.AZUL_SUAVE).pack(anchor="w")
 
-        # Campos en dos columnas: nombre | apellido, grado | paralelo; la seña ocupa todo el ancho
+        # Campos en dos columnas: nombre | apellido, grado | paralelo; correo y seña ocupan todo el ancho
         self.campos = {
             "nombre": Campo(tarjeta, "Nombre"),
             "apellido": Campo(tarjeta, "Apellido"),
+            "correo": Campo(tarjeta, "Correo (de preferencia institucional)"),
             "grado": Campo(tarjeta, "Grado", "lista", GRADOS),
             "paralelo": Campo(tarjeta, "Paralelo", "lista", PARALELOS),
             "sena": Campo(tarjeta, "Seña particular del objeto", "texto", ancho=52, contador=True),
         }
-        posiciones = {"nombre": (2, 0), "apellido": (2, 1), "grado": (3, 0), "paralelo": (3, 1)}
+        posiciones = {"nombre": (2, 0), "apellido": (2, 1), "grado": (4, 0), "paralelo": (4, 1)}
         for clave, (fila, columna) in posiciones.items():
-            self.campos[clave].marco.grid(row=fila, column=columna, sticky="ew",
+            self.campos[clave].marco.grid(row=fila, column=columna, sticky="new",
                                           padx=(0, 10) if columna == 0 else (10, 0), pady=4)
-        self.campos["sena"].marco.grid(row=4, column=0, columnspan=2, sticky="ew", pady=4)
-        estilos.texto(tarjeta, "Si eres docente no necesitas paralelo.", 10, color=estilos.TEXTO_SUAVE).grid(
-            row=5, column=0, columnspan=2, sticky="w")
+        self.campos["correo"].marco.grid(row=3, column=0, columnspan=2, sticky="ew", pady=4)
+        self.campos["sena"].marco.grid(row=5, column=0, columnspan=2, sticky="ew", pady=4)
+        estilos.texto(tarjeta, "Ej. de correo: nombre.apellido@colegio.edu.ec  ·  Si eres docente no necesitas paralelo.",
+                      10, color=estilos.TEXTO_SUAVE).grid(
+            row=6, column=0, columnspan=2, sticky="w")
 
         botones = tk.Frame(tarjeta, bg=estilos.BLANCO)
-        botones.grid(row=6, column=0, columnspan=2, sticky="ew", pady=(12, 0))
+        botones.grid(row=7, column=0, columnspan=2, sticky="ew", pady=(12, 0))
         estilos.boton_primario(botones, "Enviar reclamo", self.enviar).pack(side="right")
         estilos.boton_secundario(botones, "Cancelar",
                                  lambda: app.mostrar("detalle", objeto_id=objeto_id)).pack(side="right", padx=10)

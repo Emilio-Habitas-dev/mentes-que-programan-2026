@@ -34,11 +34,11 @@
 **Extras hechos:**
 1. Conteo por estado (tarjetas clicables que filtran por ese estado).
 2. Botón «Reclamar» en la tabla (columna Acción) y abajo, solo activo si el objeto está Disponible.
-3. **Reportar objeto perdido** (estudiante/profesor) → el administrador lo ve en «Revisar reportes».
+3. **Reportar objeto encontrado** (estudiante/profesor, con correo institucional) → el administrador, al recibirlo en Inspección, pulsa «Recibido: agregar al listado» y se crea como objeto Disponible con esos datos.
 4. Login de administrador de demostración: `prueba1` / `prueba-administrador`, contraseña oculta con puntos y botón Mostrar/Ocultar.
 5. Panel de administrador: solicitudes de reclamo (Entregar o Rechazar), reportes (marcar atendido), objetos, restablecer datos.
 
-**Pendiente:** registrar objeto encontrado desde el administrador.
+
 
 ## 3. Pantallas y mapa de navegación
 
@@ -66,7 +66,7 @@ Basado en los bocetos de `docs/bocetos/`.
 | Listado | `04_listado_remaster.jpg` | Tabla: ID, objeto, categoría, fecha hallazgo, estado (con color), lugar | Buscar, filtrar por categoría, Ver detalle, Volver a inicio |
 | Detalle | — | Ícono por categoría, todos los datos, estado | Reclamar (desactivado si no está Disponible), Volver |
 | Formulario de reclamo | `07_formulario_reclamo_remaster.jpg` | Nombre, apellido, grado, paralelo, seña particular (contador en vivo) | Enviar / Cancelar |
-| Reportar objeto perdido | — | Nombre, apellido, grado, paralelo, objeto, categoría, dónde se perdió, descripción | Enviar / Cancelar |
+| Reportar objeto encontrado | — | Nombre, apellido, correo institucional, grado, paralelo, objeto, categoría, dónde se encontró, descripción | Enviar / Cancelar |
 | Confirmación | — | Éxito (objeto ahora Reclamado) o error | Volver al listado |
 | Login admin | `02_login_admin_remaster.jpg` | Usuario y clave de demo | Ingresar / Volver |
 | Panel admin | `03_panel_admin_remaster.jpg` | Tarjetas: solicitudes (con contador), registrar objeto, opciones | Abrir cada sección, Salir |
@@ -82,7 +82,7 @@ Basado en los bocetos de `docs/bocetos/`.
 
 ## 5. Datos y validaciones
 
-- `data/datos_iniciales.json`: los 10 objetos de prueba (nunca se modifica).
+- `data/datos_iniciales.json`: los 10 objetos de prueba del reto, **todos Disponibles** (decisión del equipo: los estados cambian solo por acciones reales en la app).
 - `data/datos.json`: se crea copiando el inicial la primera vez; ahí se guardan los cambios (persisten al cerrar). "Restablecer" lo vuelve a copiar.
 
 ```json
@@ -100,10 +100,11 @@ Basado en los bocetos de `docs/bocetos/`.
 | Campo | Reclamo | Reporte | Regla |
 |---|---|---|---|
 | Nombre / Apellido (separados) | ✔ | ✔ | Obligatorios, solo letras y espacios |
-| Grado | ✔ | ✔ | Lista: 8vo–10mo EGB, 1ro–3ro BGU, Docente |
+| Correo | ✔ | ✔ | Obligatorio, formato válido; se recomienda el institucional |
+| Grado | ✔ | ✔ | Lista: Inicial 1–2, 1ro–10mo EGB, 1ro–3ro BGU, Docente |
 | Paralelo | ✔ | ✔ | Lista A–D; no se pide a Docente. Grado + paralelo = curso (ej. «2do BGU A») |
 | Seña particular | ✔ | — | Obligatoria, mínimo 10 caracteres |
-| Objeto, categoría, dónde se perdió | — | ✔ | Obligatorios |
+| Objeto, categoría, dónde se encontró | — | ✔ | Obligatorios |
 | Descripción | — | ✔ | Obligatoria, mínimo 10 caracteres |
 
 - Los errores se muestran bajo cada campo, en rojo, y no se guarda nada.
@@ -159,7 +160,7 @@ CategoriaB_UEBorja_FindIt/        ← nombre exigido: CategoriaB_Colegio_NombreD
 - [ ] Formulario vacío → no registra y marca cada campo que falta.
 - [ ] Filtro por estado (combo o tarjeta de conteo) muestra solo ese estado; combinado sin resultados explica qué filtros están activos.
 - [ ] Reclamo válido → aparece en Solicitudes del administrador → Entregar (pasa a Entregado) o Rechazar (vuelve a Disponible).
-- [ ] Reporte de objeto perdido → aparece en Reportes del administrador.
+- [ ] Reporte de objeto encontrado → aparece en Reportes del administrador → «Agregar al listado» → aparece como Disponible y se puede reclamar.
 - [ ] Seña con menos de 10 caracteres → error específico.
 - [ ] Búsqueda sin coincidencias (ej. "xyz") → mensaje "No se encontraron objetos".
 - [ ] Filtro por categoría muestra solo esa categoría.

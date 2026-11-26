@@ -26,7 +26,7 @@
       "categoria": "Tecnología",
       "lugar": "Laboratorio de Física",
       "fecha_hallazgo": "2026-11-19",
-      "estado": "Reclamado",
+      "estado": "Disponible",
       "descripcion": "Color negro con tapa deslizable",
       "fecha_entrega": null
     },
@@ -46,7 +46,7 @@
       "categoria": "Deportes",
       "lugar": "Cancha principal",
       "fecha_hallazgo": "2026-11-20",
-      "estado": "Entregado",
+      "estado": "Disponible",
       "descripcion": "Número 5 con franjas amarillas",
       "fecha_entrega": null
     },
@@ -76,7 +76,7 @@
       "categoria": "Ropa",
       "lugar": "Patio central",
       "fecha_hallazgo": "2026-11-24",
-      "estado": "Reclamado",
+      "estado": "Disponible",
       "descripcion": "Visera plana con logotipo bordado",
       "fecha_entrega": null
     },

@@ -24,7 +24,7 @@ class PantallaPanelAdmin(tk.Frame):
         tarjetas = [
             ("✉", "Revisar solicitudes de reclamo", "Entrega el objeto a su dueño o rechaza el reclamo.",
              len(reclamos.pendientes(app.datos)), lambda: app.mostrar("solicitudes")),
-            ("!", "Revisar reportes de objetos perdidos", "Lo que estudiantes y profesores reportaron como perdido.",
+            ("!", "Revisar reportes de objetos encontrados", "Agrega al listado lo que entregaron en Inspección.",
              len(reportes.pendientes(app.datos)), lambda: app.mostrar("reportes")),
             ("✎", "Revisar objetos encontrados", "Consulta la tabla completa de objetos.",
              None, lambda: app.mostrar("listado")),

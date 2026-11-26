@@ -2,9 +2,15 @@
 
 Devuelven un diccionario {campo: mensaje de error}. Si está vacío, todo está bien.
 """
+import re
+
 MIN_TEXTO = 10  # Regla del reto: la seña particular debe tener al menos 10 caracteres
 
-GRADOS = ["8vo EGB", "9no EGB", "10mo EGB", "1ro BGU", "2do BGU", "3ro BGU", "Docente"]
+# Todos los niveles de un colegio en Ecuador: Inicial, Educación General Básica (EGB) y Bachillerato (BGU)
+GRADOS = (["Inicial 1", "Inicial 2"]
+          + [f"{n} EGB" for n in ("1ro", "2do", "3ro", "4to", "5to", "6to", "7mo", "8vo", "9no", "10mo")]
+          + ["1ro BGU", "2do BGU", "3ro BGU", "Docente"])
+PATRON_CORREO = re.compile(r"^[\w.+-]+@[\w-]+(\.[\w-]+)+$")
 PARALELOS = ["A", "B", "C", "D"]
 CATEGORIAS = ["Ropa", "Útiles", "Tecnología", "Deportes", "Otros"]
 DOCENTE = "Docente"
@@ -43,20 +49,32 @@ def validar_texto_largo(valor, campo, errores, nombre_visible):
         errores[campo] = f"Debe tener al menos {MIN_TEXTO} caracteres."
 
 
-def validar_reclamo(nombre, apellido, grado, paralelo, sena):
+def validar_correo(correo, errores):
+    """Correo obligatorio con formato válido (se recomienda el institucional)."""
+    correo = correo.strip()
+    if not correo:
+        errores["correo"] = "Escribe tu correo (de preferencia el institucional)."
+    elif not PATRON_CORREO.match(correo):
+        errores["correo"] = "El correo no es válido. Ejemplo: nombre.apellido@colegio.edu.ec"
+
+
+def validar_reclamo(nombre, apellido, correo, grado, paralelo, sena):
     errores = validar_persona(nombre, apellido, grado, paralelo)
+    validar_correo(correo, errores)
     validar_texto_largo(sena, "sena", errores, "una seña particular del objeto")
     return errores
 
 
-def validar_reporte(nombre, apellido, grado, paralelo, objeto, categoria, lugar, descripcion):
+def validar_reporte(nombre, apellido, correo, grado, paralelo, objeto, categoria, lugar, descripcion):
+    """Reporte de un objeto que alguien encontró y entregará en Inspección."""
     errores = validar_persona(nombre, apellido, grado, paralelo)
+    validar_correo(correo, errores)
     if not objeto.strip():
-        errores["objeto"] = "Escribe qué objeto perdiste."
+        errores["objeto"] = "Escribe qué objeto encontraste."
     if categoria not in CATEGORIAS:
         errores["categoria"] = "Selecciona una categoría."
     if not lugar.strip():
-        errores["lugar"] = "Escribe dónde lo perdiste."
+        errores["lugar"] = "Escribe dónde lo encontraste."
     validar_texto_largo(descripcion, "descripcion", errores, "una descripción del objeto")
     return errores
 

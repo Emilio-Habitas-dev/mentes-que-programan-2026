@@ -10,8 +10,8 @@ class PantallaSolicitudes(PantallaTablaAdmin):
     SUBTITULO = "Compara la seña particular con el objeto: entrégalo a su dueño o rechaza el reclamo."
     VACIO = "No hay solicitudes pendientes. Aparecerán aquí cuando alguien reclame un objeto."
     COLUMNAS = {
-        "objeto": ("Objeto", 200), "lugar": ("Lugar", 150), "nombre": ("Reclamado por", 180),
-        "curso": ("Curso", 100), "sena": ("Seña particular", 260), "fecha": ("Fecha", 100),
+        "objeto": ("Objeto", 170), "nombre": ("Reclamado por", 150), "correo": ("Correo", 220),
+        "curso": ("Curso", 90), "sena": ("Seña particular", 230), "fecha": ("Fecha", 95),
     }
 
     def __init__(self, padre, app):
@@ -24,7 +24,7 @@ class PantallaSolicitudes(PantallaTablaAdmin):
         for reclamo in reclamos.pendientes(self.app.datos):
             objeto = objetos.buscar_por_id(self.app.datos, reclamo["objeto_id"])
             persona = f"{reclamo['nombre']} {reclamo.get('apellido', '')}".strip()
-            filas.append((reclamo["id"], (objeto["nombre"], objeto["lugar"], persona, reclamo["curso"],
+            filas.append((reclamo["id"], (objeto["nombre"], persona, reclamo.get("correo", "—"), reclamo["curso"],
                                           reclamo["sena"], reclamo["fecha"])))
         return filas
 

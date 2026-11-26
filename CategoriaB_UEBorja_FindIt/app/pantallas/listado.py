@@ -37,7 +37,7 @@ class PantallaListado(tk.Frame):
         estilos.texto(izquierda, "Explora y busca entre los objetos encontrados en Inspección.", 12,
                       color=estilos.TEXTO_SUAVE, fondo=estilos.FONDO).pack(anchor="w")
         if self.app.modo != "admin":
-            boton = estilos.boton_primario(izquierda, "+  Reportar objeto perdido", lambda: self.app.mostrar("reportar"))
+            boton = estilos.boton_primario(izquierda, "+  Reportar objeto encontrado", lambda: self.app.mostrar("reportar"))
             boton.configure(bg=estilos.MARINO, activebackground=estilos.TEXTO)
             boton.pack(anchor="w", pady=(10, 0))
 

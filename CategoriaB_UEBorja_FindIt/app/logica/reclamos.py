@@ -14,9 +14,9 @@ def puede_reclamar(objeto):
     return objeto["estado"] == objetos.DISPONIBLE
 
 
-def registrar_reclamo(datos, objeto_id, nombre, apellido, grado, paralelo, sena):
+def registrar_reclamo(datos, objeto_id, nombre, apellido, correo, grado, paralelo, sena):
     """Valida y registra el reclamo. Devuelve (errores, reclamo_creado)."""
-    errores = validar_reclamo(nombre, apellido, grado, paralelo, sena)
+    errores = validar_reclamo(nombre, apellido, correo, grado, paralelo, sena)
     objeto = objetos.buscar_por_id(datos, objeto_id)
     if not puede_reclamar(objeto):
         errores["general"] = f"Este objeto ya está {objeto['estado']}; no se puede reclamar."
@@ -28,6 +28,7 @@ def registrar_reclamo(datos, objeto_id, nombre, apellido, grado, paralelo, sena)
         "objeto_id": objeto_id,
         "nombre": nombre.strip(),
         "apellido": apellido.strip(),
+        "correo": correo.strip().lower(),
         "curso": armar_curso(grado, paralelo),
         "sena": sena.strip(),
         "fecha": date.today().isoformat(),

@@ -15,3 +15,8 @@
 | 11:22 | Interfaz | Formularios con componente común (`pantallas/componentes.py`): reclamo con nombre/apellido/grado/paralelo y nueva vista `reportar.py`. |
 | 11:22 | Interfaz | Administrador: Solicitudes solo con reclamos reales (Entregar / Rechazar), nueva vista Reportes; base común `tabla_admin.py`. |
 | 11:22 | Plan | Plan actualizado con los formularios, estados y pruebas nuevas. |
+| 11:30 | Datos | Los 10 objetos iniciales empiezan Disponibles (sin reclamos ni entregas iniciales); conteos siempre calculados de los datos reales. |
+| 11:30 | Lógica | Grados: todos los niveles (Inicial 1–2, 1ro–10mo EGB, 1ro–3ro BGU, Docente). Correo obligatorio con formato válido en el reclamo. |
+| 11:30 | Interfaz | Campo Correo (de preferencia institucional) en el reclamo; columna Correo en Solicitudes del administrador; campos alineados arriba. |
+| 11:40 | Lógica | Reportes ahora son de objetos **encontrados** (con correo institucional). `reportes.agregar_al_listado` crea el objeto Disponible con los datos del reporte; `descartar` lo cierra. |
+| 11:40 | Interfaz | Vista «Reportar objeto encontrado» (correo, dónde lo encontraste). Administrador: «Recibido: agregar al listado» y «Descartar», con columna Correo. Ventana un poco más alta (780 px). |

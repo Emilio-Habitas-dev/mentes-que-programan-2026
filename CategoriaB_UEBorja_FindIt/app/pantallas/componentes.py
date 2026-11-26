@@ -31,7 +31,8 @@ class Campo:
             self.variable = tk.StringVar()
             if tipo == "lista":
                 self.control = ttk.Combobox(self.marco, textvariable=self.variable, values=list(opciones),
-                                            state="readonly", width=ancho)
+                                            state="readonly", width=ancho,
+                                            height=min(len(opciones), 17))  # muestra todos los grados
             else:
                 self.control = ttk.Entry(self.marco, textvariable=self.variable, width=ancho)
         self.control.pack(fill="x")

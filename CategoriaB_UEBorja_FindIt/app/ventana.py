@@ -35,7 +35,7 @@ class Ventana:
     def __init__(self, root):
         self.root = root
         root.title("FIND IT · Objetos perdidos y encontrados")
-        root.geometry("1180x740")
+        root.geometry("1180x780")
         root.minsize(920, 620)
         estilos.configurar(root)
 
