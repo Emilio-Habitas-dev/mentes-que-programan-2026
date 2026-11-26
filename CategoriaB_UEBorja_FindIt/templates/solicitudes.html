@@ -9,11 +9,13 @@
   <tr><th>Objeto</th><th>Reclamado por</th><th>Correo</th><th>Curso</th><th>Seña particular</th><th>Estado</th><th>Acciones</th></tr>
   {% for r, o in filas %}
   <tr><td>{{ o.nombre }}</td><td>{{ r.nombre }} {{ r.apellido }}</td><td>{{ r.correo }}</td><td>{{ r.curso }}</td><td>{{ r.sena }}</td>
-    <td>{% if r.estado == coordinado %}Entrega {{ r.hora_entrega }}{% else %}Pendiente{% endif %}</td>
+    <td>{% if r.estado == coordinado %}Entrega {{ r.fecha_cita }} {{ r.hora_entrega }}<br><small>{{ r.lugar_entrega }}</small>{% else %}Pendiente{% endif %}</td>
     <td>
-      <form method="post" class="fila" style="gap:6px">
+      <form method="post" class="fila" style="gap:6px;min-width:420px">
         <input type="hidden" name="reclamo_id" value="{{ r.id }}">
-        <input name="hora" placeholder="HH:MM" style="width:80px">
+        <input type="date" name="fecha" value="{{ hoy }}" min="{{ hoy }}" style="width:auto">
+        <input type="time" name="hora" value="13:30" style="width:auto">
+        <input name="lugar" value="{{ lugar }}" title="Lugar de entrega" style="width:260px">
         <button class="boton sec" name="accion" value="coordinar">Coordinar entrega</button>
         <button class="boton" name="accion" value="entregar">Entregado</button>
         <button class="boton rojo" name="accion" value="rechazar" onclick="return confirm('¿Rechazar el reclamo?')">Rechazar</button>

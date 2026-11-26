@@ -26,7 +26,7 @@ class PantallaSolicitudes(PantallaTablaAdmin):
         for reclamo in reclamos.pendientes(self.app.datos):
             objeto = objetos.buscar_por_id(self.app.datos, reclamo["objeto_id"])
             persona = f"{reclamo['nombre']} {reclamo.get('apellido', '')}".strip()
-            estado = (f"Entrega {reclamo['hora_entrega']}" if reclamo.get("estado") == reclamos.COORDINADO
+            estado = (f"Entrega {reclamo.get('fecha_cita', '')} {reclamo['hora_entrega']}" if reclamo.get("estado") == reclamos.COORDINADO
                       else "Pendiente")
             filas.append((reclamo["id"], (objeto["nombre"], persona, reclamo.get("correo", "—"), reclamo["curso"],
                                           reclamo["sena"], reclamo["fecha"], estado)))
@@ -49,17 +49,23 @@ class PantallaSolicitudes(PantallaTablaAdmin):
         reclamo_id = self.seleccionado()
         if reclamo_id is None:
             return
-        hora = simpledialog.askstring("Coordinar entrega", "Hora de entrega en el edificio administrativo (HH:MM):",
-                                      parent=self)
-        if hora is None:
+        from datetime import date
+        from app.logica.mensajes import LUGAR_ENTREGA
+        fecha = simpledialog.askstring("Coordinar entrega", "Fecha de entrega (AAAA-MM-DD):",
+                                       initialvalue=date.today().isoformat(), parent=self)
+        hora = fecha and simpledialog.askstring("Coordinar entrega", "Hora de entrega (HH:MM):",
+                                                initialvalue="13:30", parent=self)
+        lugar = hora and simpledialog.askstring("Coordinar entrega", "Lugar de entrega:",
+                                                initialvalue=LUGAR_ENTREGA, parent=self)
+        if not lugar:
             return
-        error = reclamos.coordinar_entrega(self.app.datos, reclamo_id, hora)
+        error = reclamos.coordinar_entrega(self.app.datos, reclamo_id, fecha, hora, lugar)
         if error:
             self.avisar(error, error=True)
             return
         self.app.guardar()
         self.actualizar()
-        self.avisar(f"Entrega coordinada a las {hora.strip()}. Se enviaron los mensajes.")
+        self.avisar(f"Entrega coordinada el {fecha} a las {hora.strip()}. Se enviaron los mensajes.")
 
     def entregar(self):
         self._resolver(reclamos.entregar, "¿El dueño ya retiró el objeto? Pasará a Entregado.",

@@ -63,8 +63,7 @@ def confirmacion(exito, titulo, detalle, objeto_id=None):
 
 @app.route("/")
 def inicio():
-    datos = almacen.cargar()
-    return render_template("inicio.html", disponibles=objetos.contar_por_estado(datos)[objetos.DISPONIBLE])
+    return render_template("inicio.html")
 
 
 @app.route("/acceso", methods=["GET", "POST"])
@@ -239,14 +238,15 @@ def admin_login():
             session.clear()
             session["admin"] = True
             return redirect(url_for("panel"))
-    return render_template("admin_login.html", error=error)
+    return render_template("admin_login.html", error=error)  # noqa
 
 
 @app.route("/admin")
 @requiere_admin
 def panel():
     datos = almacen.cargar()
-    return render_template("panel.html", solicitudes=len(reclamos.pendientes(datos)),
+    return render_template("panel.html", solicitudes=len(reclamos.pendientes(datos)), cuentas=len(datos["usuarios"]),
+                           nombre_admin=acceso.nombre_admin(),
                            reportes_pendientes=len(reportes.pendientes(datos)))
 
 
@@ -259,7 +259,8 @@ def solicitudes():
         reclamo_id = int(request.form["reclamo_id"])
         accion = request.form["accion"]
         if accion == "coordinar":
-            resultado = reclamos.coordinar_entrega(datos, reclamo_id, request.form.get("hora", ""))
+            resultado = reclamos.coordinar_entrega(datos, reclamo_id, request.form.get("fecha", ""),
+                                                   request.form.get("hora", ""), request.form.get("lugar", ""))
             aviso = resultado or "Entrega coordinada. Se enviaron los mensajes al dueño y a quien lo encontró."
         elif accion == "entregar":
             resultado = reclamos.entregar(datos, reclamo_id)
@@ -271,7 +272,9 @@ def solicitudes():
         if not error:
             almacen.guardar(datos)
     filas = [(r, objetos.buscar_por_id(datos, r["objeto_id"])) for r in reclamos.pendientes(datos)]
-    return render_template("solicitudes.html", filas=filas, aviso=aviso, error=error, coordinado=reclamos.COORDINADO)
+    from datetime import date
+    return render_template("solicitudes.html", filas=filas, aviso=aviso, error=error, coordinado=reclamos.COORDINADO,
+                           hoy=date.today().isoformat(), lugar=mensajes.LUGAR_ENTREGA)
 
 
 @app.route("/admin/reportes", methods=["GET", "POST"])
@@ -306,6 +309,44 @@ def registrar_objeto():
             return confirmacion(True, "¡Objeto registrado!",
                                 f"«{objeto['nombre']}» ya está en el listado como Disponible (ID {objeto['id']:02d}).")
     return render_template("registrar_objeto.html", valores=valores, errores=errores, categorias=CATEGORIAS)
+
+
+@app.route("/admin/opciones", methods=["GET", "POST"])
+@requiere_admin
+def opciones():
+    """Cambiar nombre, usuario y contraseña del administrador (pide la contraseña actual)."""
+    aviso, error = "", False
+    if request.method == "POST":
+        f = request.form
+        resultado = acceso.cambiar_credenciales(f.get("actual", ""), f.get("nombre", ""), f.get("usuario", ""),
+                                                f.get("nueva", ""), f.get("confirmar", ""))
+        aviso, error = (resultado, True) if resultado else ("Credenciales actualizadas.", False)
+    credenciales = almacen.cargar_credenciales()
+    return render_template("opciones.html", aviso=aviso, error=error, nombre=credenciales.get("nombre", ""),
+                           usuario_admin=credenciales["usuario"])
+
+
+@app.route("/admin/usuarios", methods=["GET", "POST"])
+@requiere_admin
+def admin_usuarios():
+    """Lista de cuentas: cuándo se registraron, editar sus datos o contraseña, o borrarlas."""
+    datos = almacen.cargar()
+    aviso, error = "", False
+    if request.method == "POST":
+        f = request.form
+        usuario_id = int(f["usuario_id"])
+        if f["accion"] == "borrar":
+            usuarios.borrar(datos, usuario_id)
+            resultado, aviso = None, "Cuenta borrada."
+        else:
+            resultado = usuarios.editar(datos, usuario_id, f.get("nombre", ""), f.get("apellido", ""),
+                                        f.get("correo", ""), f.get("nueva", ""), f.get("confirmar", ""))
+            aviso = resultado or "Cuenta actualizada."
+        error = bool(resultado)
+        if not error:
+            almacen.guardar(datos)
+    return render_template("usuarios.html", lista=datos["usuarios"], aviso=aviso, error=error,
+                           descripcion=usuarios.descripcion)
 
 
 @app.route("/admin/restablecer", methods=["POST"])

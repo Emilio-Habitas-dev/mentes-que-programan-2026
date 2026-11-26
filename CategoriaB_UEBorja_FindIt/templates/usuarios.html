@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('panel') }}">← Volver al panel</a>
+<h1>Usuarios registrados</h1><p class="sub">Corrige datos, pon una contraseña nueva (se guarda cifrada) o borra la cuenta.</p>
+{% if aviso %}<p class="aviso {% if error %}error{% endif %}">{{ aviso }}</p>{% endif %}
+<div class="tabla-caja">
+{% if lista %}
+<table>
+  <tr><th>Registrado</th><th>Rol y grado</th><th>Nombre</th><th>Apellido</th><th>Correo</th><th>Contraseña nueva</th><th>Acciones</th></tr>
+  {% for u in lista %}
+  <tr><form method="post">
+    <input type="hidden" name="usuario_id" value="{{ u.id }}">
+    <td>{{ u.registrado or '—' }}</td><td>{{ descripcion(u) }}</td>
+    <td><input name="nombre" value="{{ u.nombre }}"></td><td><input name="apellido" value="{{ u.apellido }}"></td>
+    <td><input name="correo" value="{{ u.correo }}"></td>
+    <td><input type="password" name="nueva" placeholder="Nueva (opcional)"><input type="password" name="confirmar" placeholder="Repítela" style="margin-top:4px"></td>
+    <td class="fila" style="gap:6px"><button class="boton" name="accion" value="editar">Guardar</button>
+      <button class="boton rojo" name="accion" value="borrar" onclick="return confirm('¿Borrar la cuenta de {{ u.nombre }}?')">Borrar</button></td>
+  </form></tr>
+  {% endfor %}
+</table>
+{% else %}<div class="vacio">Todavía no hay cuentas registradas.</div>{% endif %}
+</div>
+{% endblock %}

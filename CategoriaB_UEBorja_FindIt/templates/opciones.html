@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('panel') }}">← Volver al panel</a>
+<h1>Opciones</h1>
+{% if aviso %}<p class="aviso {% if error %}error{% endif %}">{{ aviso }}</p>{% endif %}
+<div class="dos">
+  <form class="tarjeta" method="post">
+    <h2>Mis credenciales</h2>
+    <p class="sub">Por seguridad, escribe tu contraseña actual. Deja la nueva en blanco si no quieres cambiarla.</p>
+    <div class="campos">
+      <div class="campo"><label>Tu nombre</label><input name="nombre" value="{{ nombre }}"></div>
+      <div class="campo"><label>Usuario</label><input name="usuario" value="{{ usuario_admin }}"></div>
+      <div class="campo ancho"><label>Contraseña actual <span class="ob">*</span></label><input type="password" name="actual"></div>
+      <div class="campo"><label>Contraseña nueva (mín. 6)</label><input type="password" name="nueva"></div>
+      <div class="campo"><label>Repite la contraseña nueva</label><input type="password" name="confirmar"></div>
+    </div>
+    <div class="acciones"><button class="boton">Guardar cambios</button></div>
+  </form>
+  <form class="tarjeta" method="post" action="{{ url_for('restablecer') }}" onsubmit="return confirm('¿Volver a los 10 objetos de prueba? Se borran reclamos, reportes, cuentas y mensajes.')">
+    <h2>Datos de prueba</h2>
+    <p class="sub">Vuelve a los 10 objetos iniciales. Útil antes de una demostración.</p>
+    <button class="boton rojo">Restablecer datos</button>
+  </form>
+</div>
+{% endblock %}

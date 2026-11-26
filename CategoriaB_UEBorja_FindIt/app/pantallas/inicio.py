@@ -2,7 +2,6 @@
 import tkinter as tk
 
 from app import estilos
-from app.logica import objetos
 
 
 class PantallaInicio(tk.Frame):
@@ -21,11 +20,7 @@ class PantallaInicio(tk.Frame):
                  font=estilos.fuente(17, "bold", "italic"), fg=estilos.NEGRO, bg=amarillo).pack()
         tk.Label(centro, text="Consulta los objetos que se encontraron en el colegio, búscalos por nombre o "
                               "categoría y registra un reclamo si alguno es tuyo.",
-                 font=estilos.fuente(12), fg=estilos.NEGRO, bg=amarillo, wraplength=520).pack(pady=(16, 4))
-
-        disponibles = objetos.contar_por_estado(app.datos)[objetos.DISPONIBLE]
-        tk.Label(centro, text=f"● {disponibles} objetos disponibles para reclamar",
-                 font=estilos.fuente(11, "bold"), fg=estilos.NEGRO, bg=amarillo).pack(pady=(0, 22))
+                 font=estilos.fuente(12), fg=estilos.NEGRO, bg=amarillo, wraplength=520).pack(pady=(16, 22))
 
         tk.Label(centro, text="Acceder como:", font=estilos.fuente(20, "bold", "italic"),
                  fg=estilos.NEGRO, bg=amarillo).pack(pady=(0, 10))

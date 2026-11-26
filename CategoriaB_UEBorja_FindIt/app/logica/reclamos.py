@@ -55,20 +55,27 @@ def _buscar(datos, reclamo_id):
     return next(r for r in datos["reclamos"] if r["id"] == reclamo_id)
 
 
-def coordinar_entrega(datos, reclamo_id, hora):
-    """El administrador acepta el reclamo y fija la hora. Avisa por mensaje al dueño y a quien encontró el objeto."""
+def coordinar_entrega(datos, reclamo_id, fecha, hora, lugar=""):
+    """El administrador acepta el reclamo y fija fecha, hora y lugar (por defecto el edificio administrativo).
+    Avisa por mensaje al dueño y a quien encontró el objeto. Devuelve un mensaje de error o None."""
+    try:
+        dia = date.fromisoformat(fecha.strip())
+    except ValueError:
+        return "Escribe la fecha en formato AAAA-MM-DD (por ejemplo 2026-11-27)."
+    if dia < date.today():
+        return "La fecha de entrega no puede ser pasada."
     if not validar_hora(hora):
         return "Escribe la hora en formato HH:MM (por ejemplo 13:30)."
+    lugar = lugar.strip() or mensajes.LUGAR_ENTREGA
     reclamo = _buscar(datos, reclamo_id)
     objeto = objetos.buscar_por_id(datos, reclamo["objeto_id"])
-    reclamo["estado"] = COORDINADO
-    reclamo["hora_entrega"] = hora.strip()
-    lugar = f"{mensajes.LUGAR_ENTREGA} a las {hora.strip()}"
+    reclamo.update(estado=COORDINADO, fecha_cita=dia.isoformat(), hora_entrega=hora.strip(), lugar_entrega=lugar)
+    cita = f"{lugar} el {dia.strftime('%d/%m/%Y')} a las {hora.strip()}"
     mensajes.enviar(datos, reclamo.get("usuario_id"), "Tu reclamo fue aprobado",
-                    f"¡Listo! Tu reclamo de «{objeto['nombre']}» fue aprobado. Retíralo en {lugar}. "
+                    f"¡Listo! Tu reclamo de «{objeto['nombre']}» fue aprobado. Retíralo en {cita}. "
                     "Al retirarlo te pediremos describir la seña particular del objeto para confirmar que es tuyo.")
     mensajes.enviar(datos, objeto.get("reportado_por"), "¡Encontramos al dueño!",
-                    f"¡Listo, encontramos al dueño de «{objeto['nombre']}»! Entrégalo en {lugar}. "
+                    f"¡Listo, encontramos al dueño de «{objeto['nombre']}»! Entrégalo en {cita}. "
                     "Gracias por ayudar.")
     return None
 

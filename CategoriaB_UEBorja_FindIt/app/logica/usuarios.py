@@ -2,6 +2,7 @@
 La contraseña nunca se guarda tal cual: se guarda su «hash» (PBKDF2 con sal), de la librería estándar."""
 import hashlib
 import secrets
+from datetime import datetime
 
 from app.datos import siguiente_id
 from app.logica.validaciones import armar_curso, validar_registro
@@ -38,6 +39,7 @@ def registrar(datos, nombre, apellido, rol, grado, paralelo, correo, clave, conf
         "correo": correo.strip().lower(),
         "sal": sal,
         "clave": _cifrar(clave, sal),
+        "registrado": datetime.now().strftime("%Y-%m-%d %H:%M"),
     }
     datos["usuarios"].append(usuario)
     return {}, usuario
@@ -66,3 +68,43 @@ def datos_formulario(usuario):
     return {"nombre": usuario["nombre"], "apellido": usuario["apellido"], "correo": usuario["correo"],
             "grado": "Docente" if es_profesor else usuario["grado"],
             "paralelo": "" if es_profesor else usuario["paralelo"]}
+
+
+def cambiar_clave(usuario, nueva, confirmar):
+    """Pone una contraseña nueva (cifrada). Devuelve un mensaje de error o None."""
+    from app.logica.validaciones import MIN_CLAVE
+    if len(nueva) < MIN_CLAVE:
+        return f"La contraseña debe tener al menos {MIN_CLAVE} caracteres."
+    if nueva != confirmar:
+        return "Las contraseñas no coinciden."
+    usuario["sal"] = secrets.token_hex(16)
+    usuario["clave"] = _cifrar(nueva, usuario["sal"])
+    return None
+
+
+def editar(datos, usuario_id, nombre, apellido, correo, nueva_clave="", confirmar=""):
+    """El administrador corrige los datos de una cuenta y, si quiere, le pone una contraseña nueva."""
+    from app.logica.validaciones import PATRON_CORREO, _validar_nombre
+    usuario = buscar_por_id(datos, usuario_id)
+    for campo, valor in (("nombre", nombre), ("apellido", apellido)):
+        error = _validar_nombre(valor, campo)
+        if error:
+            return error
+    correo = correo.strip().lower()
+    if not PATRON_CORREO.match(correo):
+        return "El correo no es válido."
+    otro = buscar_por_correo(datos, correo)
+    if otro and otro["id"] != usuario_id:
+        return "Ya existe otra cuenta con ese correo."
+    if nueva_clave:
+        error = cambiar_clave(usuario, nueva_clave, confirmar)
+        if error:
+            return error
+    usuario.update(nombre=nombre.strip(), apellido=apellido.strip(), correo=correo)
+    return None
+
+
+def borrar(datos, usuario_id):
+    """Elimina la cuenta y sus mensajes (sus reclamos y reportes quedan como historial)."""
+    datos["usuarios"] = [u for u in datos["usuarios"] if u["id"] != usuario_id]
+    datos["mensajes"] = [m for m in datos["mensajes"] if m["usuario_id"] != usuario_id]
