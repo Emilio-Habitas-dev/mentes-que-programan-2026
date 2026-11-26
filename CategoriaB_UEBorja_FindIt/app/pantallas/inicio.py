@@ -41,5 +41,5 @@ class PantallaInicio(tk.Frame):
                   relief="flat", bd=0, width=24, height=2, cursor="hand2").pack()
 
     def entrar_estudiante(self):
-        self.app.modo = "estudiante"
-        self.app.mostrar("listado")
+        """Estudiantes y profesores inician sesión o crean su cuenta."""
+        self.app.mostrar("acceso")

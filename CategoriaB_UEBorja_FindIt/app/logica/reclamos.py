@@ -1,12 +1,17 @@
 """Reclamos. Aquí vive la regla principal del reto:
-solo se puede reclamar un objeto Disponible y, al reclamarlo, pasa a Reclamado."""
+solo se puede reclamar un objeto Disponible y, al reclamarlo, pasa a Reclamado.
+
+Ciclo de un reclamo:  Pendiente -> Coordinado (el administrador fija la hora de entrega) -> Entregado
+                      Pendiente o Coordinado -> Rechazado (el objeto vuelve a Disponible)"""
 from datetime import date
 
 from app.datos import siguiente_id
-from app.logica import objetos
-from app.logica.validaciones import armar_curso, validar_reclamo
+from app.logica import mensajes, objetos
+from app.logica.validaciones import armar_curso, validar_hora, validar_reclamo
 
 PENDIENTE = "Pendiente"
+COORDINADO = "Coordinado"
+ABIERTOS = (PENDIENTE, COORDINADO)  # Reclamos que aún no se cierran
 
 
 def puede_reclamar(objeto):
@@ -14,7 +19,7 @@ def puede_reclamar(objeto):
     return objeto["estado"] == objetos.DISPONIBLE
 
 
-def registrar_reclamo(datos, objeto_id, nombre, apellido, correo, grado, paralelo, sena):
+def registrar_reclamo(datos, objeto_id, nombre, apellido, correo, grado, paralelo, sena, usuario_id=None):
     """Valida y registra el reclamo. Devuelve (errores, reclamo_creado)."""
     errores = validar_reclamo(nombre, apellido, correo, grado, paralelo, sena)
     objeto = objetos.buscar_por_id(datos, objeto_id)
@@ -26,6 +31,7 @@ def registrar_reclamo(datos, objeto_id, nombre, apellido, correo, grado, paralel
     reclamo = {
         "id": siguiente_id(datos["reclamos"]),
         "objeto_id": objeto_id,
+        "usuario_id": usuario_id,
         "nombre": nombre.strip(),
         "apellido": apellido.strip(),
         "correo": correo.strip().lower(),
@@ -33,6 +39,7 @@ def registrar_reclamo(datos, objeto_id, nombre, apellido, correo, grado, paralel
         "sena": sena.strip(),
         "fecha": date.today().isoformat(),
         "estado": PENDIENTE,
+        "hora_entrega": None,
     }
     datos["reclamos"].append(reclamo)
     objetos.cambiar_estado(objeto, objetos.RECLAMADO)  # Regla del reto: pasa a Reclamado
@@ -40,24 +47,49 @@ def registrar_reclamo(datos, objeto_id, nombre, apellido, correo, grado, paralel
 
 
 def pendientes(datos):
-    """Reclamos que Inspección todavía no ha entregado ni rechazado."""
-    return [r for r in datos["reclamos"] if r.get("estado", PENDIENTE) == PENDIENTE]
+    """Reclamos abiertos (pendientes o con entrega coordinada) que ve el administrador."""
+    return [r for r in datos["reclamos"] if r.get("estado", PENDIENTE) in ABIERTOS]
 
 
-def _resolver(datos, reclamo_id, estado_objeto, estado_reclamo):
-    """Cierra un reclamo y cambia el estado del objeto (si la transición es válida)."""
-    reclamo = next(r for r in datos["reclamos"] if r["id"] == reclamo_id)
-    error = objetos.cambiar_estado(objetos.buscar_por_id(datos, reclamo["objeto_id"]), estado_objeto)
-    if not error:
-        reclamo["estado"] = estado_reclamo
-    return error
+def _buscar(datos, reclamo_id):
+    return next(r for r in datos["reclamos"] if r["id"] == reclamo_id)
+
+
+def coordinar_entrega(datos, reclamo_id, hora):
+    """El administrador acepta el reclamo y fija la hora. Avisa por mensaje al dueño y a quien encontró el objeto."""
+    if not validar_hora(hora):
+        return "Escribe la hora en formato HH:MM (por ejemplo 13:30)."
+    reclamo = _buscar(datos, reclamo_id)
+    objeto = objetos.buscar_por_id(datos, reclamo["objeto_id"])
+    reclamo["estado"] = COORDINADO
+    reclamo["hora_entrega"] = hora.strip()
+    lugar = f"{mensajes.LUGAR_ENTREGA} a las {hora.strip()}"
+    mensajes.enviar(datos, reclamo.get("usuario_id"), "Tu reclamo fue aprobado",
+                    f"¡Listo! Confirmamos que «{objeto['nombre']}» es tuyo. Retíralo en {lugar}. "
+                    "Lleva tu seña particular.")
+    mensajes.enviar(datos, objeto.get("reportado_por"), "¡Encontramos al dueño!",
+                    f"¡Listo, encontramos al dueño de «{objeto['nombre']}»! Entrégalo en {lugar}. "
+                    "Gracias por ayudar.")
+    return None
 
 
 def entregar(datos, reclamo_id):
     """El dueño retiró el objeto: pasa a Entregado."""
-    return _resolver(datos, reclamo_id, objetos.ENTREGADO, "Entregado")
+    reclamo = _buscar(datos, reclamo_id)
+    error = objetos.cambiar_estado(objetos.buscar_por_id(datos, reclamo["objeto_id"]), objetos.ENTREGADO)
+    if not error:
+        reclamo["estado"] = "Entregado"
+    return error
 
 
 def rechazar(datos, reclamo_id):
-    """La seña no coincide: el objeto vuelve a Disponible."""
-    return _resolver(datos, reclamo_id, objetos.DISPONIBLE, "Rechazado")
+    """La seña no coincide: el objeto vuelve a Disponible y se avisa a quien reclamó."""
+    reclamo = _buscar(datos, reclamo_id)
+    objeto = objetos.buscar_por_id(datos, reclamo["objeto_id"])
+    error = objetos.cambiar_estado(objeto, objetos.DISPONIBLE)
+    if not error:
+        reclamo["estado"] = "Rechazado"
+        mensajes.enviar(datos, reclamo.get("usuario_id"), "Reclamo rechazado",
+                        f"Tu reclamo de «{objeto['nombre']}» no fue aprobado: la seña particular no coincide. "
+                        "Si crees que es un error, acércate al edificio administrativo.")
+    return error

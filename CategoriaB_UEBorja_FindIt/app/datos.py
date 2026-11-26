@@ -12,6 +12,7 @@ CARPETA_DATOS = Path(__file__).resolve().parent.parent / "data"
 RUTA_INICIALES = CARPETA_DATOS / "datos_iniciales.json"
 RUTA_DATOS = CARPETA_DATOS / "datos.json"
 RUTA_CREDENCIALES = CARPETA_DATOS / "credenciales_demo.json"
+CARPETA_FOTOS = CARPETA_DATOS / "fotos"  # Fotos subidas en los reportes
 
 
 def cargar():
@@ -20,7 +21,9 @@ def cargar():
         restablecer()
     with open(RUTA_DATOS, encoding="utf-8") as archivo:
         datos = json.load(archivo)
-    datos.setdefault("reportes", [])  # Compatibilidad con archivos creados antes de existir los reportes
+    # Compatibilidad con archivos creados antes de existir estas listas
+    for lista in ("reportes", "usuarios", "mensajes"):
+        datos.setdefault(lista, [])
     return datos
 
 
@@ -44,3 +47,19 @@ def cargar_credenciales():
 def siguiente_id(lista):
     """Id nuevo: el mayor id existente + 1."""
     return max((elemento["id"] for elemento in lista), default=0) + 1
+
+
+def guardar_foto(ruta_origen, nombre_base):
+    """Copia la foto elegida a data/fotos/ y devuelve su nombre (se guarda ese nombre en el JSON)."""
+    CARPETA_FOTOS.mkdir(exist_ok=True)
+    nombre = f"{nombre_base}{Path(ruta_origen).suffix.lower()}"
+    shutil.copyfile(ruta_origen, CARPETA_FOTOS / nombre)
+    return nombre
+
+
+def ruta_foto(nombre):
+    """Ruta completa de una foto guardada, o None si no existe."""
+    if not nombre:
+        return None
+    ruta = CARPETA_FOTOS / nombre
+    return ruta if ruta.exists() else None

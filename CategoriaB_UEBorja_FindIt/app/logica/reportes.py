@@ -1,7 +1,7 @@
 """Reportes de objetos ENCONTRADOS: un estudiante o profesor avisa que encontró algo y lo lleva a Inspección.
 Cuando Inspección recibe el objeto, el reporte se convierte automáticamente en un objeto Disponible del listado."""
 from app.datos import siguiente_id
-from app.logica import objetos
+from app.logica import mensajes, objetos
 from app.logica.validaciones import armar_curso, validar_reporte
 from datetime import date
 
@@ -10,8 +10,10 @@ AGREGADO = "Agregado al listado"
 DESCARTADO = "Descartado"
 
 
-def registrar_reporte(datos, nombre, apellido, correo, grado, paralelo, objeto, categoria, lugar, descripcion):
-    """Valida y guarda el reporte. Devuelve (errores, reporte_creado)."""
+def registrar_reporte(datos, nombre, apellido, correo, grado, paralelo, objeto, categoria, lugar, descripcion,
+                      usuario_id=None, foto=None):
+    """Valida y guarda el reporte. foto: nombre del archivo ya guardado en data/fotos (opcional).
+    Devuelve (errores, reporte_creado)."""
     errores = validar_reporte(nombre, apellido, correo, grado, paralelo, objeto, categoria, lugar, descripcion)
     if errores:
         return errores, None
@@ -27,6 +29,8 @@ def registrar_reporte(datos, nombre, apellido, correo, grado, paralelo, objeto, 
         "descripcion": descripcion.strip(),
         "fecha": date.today().isoformat(),
         "estado": PENDIENTE,
+        "usuario_id": usuario_id,
+        "foto": foto,
     }
     datos["reportes"].append(reporte)
     return {}, reporte
@@ -41,10 +45,14 @@ def _buscar(datos, reporte_id):
 
 
 def agregar_al_listado(datos, reporte_id):
-    """Inspección recibió el objeto: se crea en el listado como Disponible con los datos del reporte."""
+    """El administrador aprueba el reporte: se publica en el listado como Disponible y se avisa a quien lo encontró."""
     reporte = _buscar(datos, reporte_id)
     nuevo = objetos.crear_objeto(datos, reporte["objeto"], reporte["categoria"], reporte["lugar"],
-                                 reporte["fecha"], reporte["descripcion"])
+                                 reporte["fecha"], reporte["descripcion"], reporte.get("foto"),
+                                 reporte.get("usuario_id"))
+    mensajes.enviar(datos, reporte.get("usuario_id"), "Tu reporte fue publicado",
+                    f"«{reporte['objeto']}» ya aparece en el listado. Guárdalo hasta que te avisemos: "
+                    "cuando aparezca el dueño te diremos la hora de entrega.")
     reporte["estado"] = AGREGADO
     reporte["objeto_id"] = nuevo["id"]
     return nuevo

@@ -16,7 +16,8 @@ python main.py        # en Linux puede ser: python3 main.py
 
 ## Cómo usar
 
-- **Estudiante o profesor:** ve el listado, busca o filtra, abre el detalle y reclama un objeto Disponible.
+- **Estudiante o profesor:** crea su cuenta con su correo institucional (debe contener `.edu`) e inicia sesión. Ve el listado, busca o filtra, reclama un objeto Disponible o reporta uno que encontró (con foto PNG/GIF opcional). Los avisos llegan al buzón ✉.
+- **Flujo de entrega:** reporte → el administrador lo publica → alguien lo reclama → el administrador coordina la hora → mensajes al dueño y a quien lo encontró → «Marcar como entregado».
 - **Administrador:** usuario `prueba1`, contraseña `prueba-administrador`.
   Son **credenciales ficticias de demostración** (en `data/credenciales_demo.json`), no seguridad real.
   Puede marcar objetos Reclamados como Entregados y restablecer los datos de prueba.
@@ -37,3 +38,7 @@ app/logica/          Reglas del sistema y validaciones (sin interfaz)
 app/pantallas/       Una vista por archivo
 docs/                Plan, bocetos y reto
 ```
+
+## Recursos de terceros
+
+- Sonido de clic (`recursos/clic.wav`): recortado de «Mouse Button Click» de sarthakraj_308 (Pixabay, licencia de contenido de Pixabay, uso gratuito).

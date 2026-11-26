@@ -37,7 +37,10 @@
 3. **Reportar objeto encontrado** (estudiante/profesor, con correo institucional) → el administrador, al recibirlo en Inspección, pulsa «Recibido: agregar al listado» y se crea como objeto Disponible con esos datos.
 4. Login de administrador de demostración: `prueba1` / `prueba-administrador`, contraseña oculta con puntos y botón Mostrar/Ocultar.
 5. Administrador **no reclama**: en el listado y el detalle puede **borrar** objetos (bloqueado si tienen reclamo pendiente) y **registrar objeto perdido** (objeto, categoría, lugar, fecha, descripción; sin datos de personas).
-6. Panel de administrador: solicitudes de reclamo (Entregar o Rechazar), reportes (marcar atendido), objetos, restablecer datos.
+6. **Cuentas**: estudiantes y profesores crean su cuenta (nombre, apellido, rol, grado o grado en que da clases, paralelo, correo institucional, contraseña cifrada) e inician sesión; los formularios se llenan solos.
+7. **Buzón ✉** (contador de no leídos): «Tu reporte fue publicado», «¡Encontramos al dueño! Entrégalo en el edificio administrativo a las HH:MM», «Tu reclamo fue aprobado…», «Reclamo rechazado».
+8. **Foto** opcional (PNG o GIF) en el reporte; se muestra en el detalle del objeto.
+9. Panel de administrador: solicitudes de reclamo (Entregar o Rechazar), reportes (marcar atendido), objetos, restablecer datos.
 
 
 

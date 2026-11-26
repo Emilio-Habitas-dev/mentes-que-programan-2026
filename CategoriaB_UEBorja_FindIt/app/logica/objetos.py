@@ -76,8 +76,9 @@ def cambiar_estado(objeto, nuevo_estado):
     return None
 
 
-def crear_objeto(datos, nombre, categoria, lugar, fecha, descripcion):
-    """Agrega un objeto nuevo al listado. Siempre empieza Disponible."""
+def crear_objeto(datos, nombre, categoria, lugar, fecha, descripcion, foto=None, reportado_por=None):
+    """Agrega un objeto nuevo al listado. Siempre empieza Disponible.
+    reportado_por: id del usuario que lo encontró (para avisarle cuando aparezca el dueño)."""
     objeto = {
         "id": siguiente_id(datos["objetos"]),
         "nombre": nombre.strip(),
@@ -87,6 +88,8 @@ def crear_objeto(datos, nombre, categoria, lugar, fecha, descripcion):
         "estado": DISPONIBLE,
         "descripcion": descripcion.strip(),
         "fecha_entrega": None,
+        "foto": foto,
+        "reportado_por": reportado_por,
     }
     datos["objetos"].append(objeto)
     return objeto
@@ -102,9 +105,9 @@ def registrar_objeto(datos, nombre, categoria, lugar, fecha, descripcion):
 
 def borrar_objeto(datos, objeto_id):
     """Quita un objeto del listado. No se permite si tiene un reclamo pendiente (primero hay que resolverlo)."""
-    pendiente = any(r["objeto_id"] == objeto_id and r.get("estado", "Pendiente") == "Pendiente"
+    pendiente = any(r["objeto_id"] == objeto_id and r.get("estado", "Pendiente") in ("Pendiente", "Coordinado")
                     for r in datos["reclamos"])
     if pendiente:
-        return "Este objeto tiene un reclamo pendiente: entrégalo o recházalo antes de borrarlo."
+        return "Este objeto tiene un reclamo abierto: entrégalo o recházalo antes de borrarlo."
     datos["objetos"] = [o for o in datos["objetos"] if o["id"] != objeto_id]
     return None

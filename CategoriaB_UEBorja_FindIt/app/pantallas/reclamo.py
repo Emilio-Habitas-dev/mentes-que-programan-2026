@@ -4,7 +4,7 @@ import tkinter as tk
 from app import estilos
 from app.logica import objetos, reclamos
 from app.logica.validaciones import GRADOS, PARALELOS
-from app.pantallas.componentes import Campo, mostrar_errores
+from app.pantallas.componentes import Campo, llenar_con_usuario, mostrar_errores
 
 
 class PantallaReclamo(tk.Frame):
@@ -49,12 +49,17 @@ class PantallaReclamo(tk.Frame):
         estilos.boton_primario(botones, "Enviar reclamo", self.enviar).pack(side="right")
         estilos.boton_secundario(botones, "Cancelar",
                                  lambda: app.mostrar("detalle", objeto_id=objeto_id)).pack(side="right", padx=10)
-        self.campos["nombre"].control.focus()
+        if app.usuario:  # Datos de la cuenta ya escritos: solo falta la seña
+            llenar_con_usuario(self.campos, app.usuario)
+            self.campos["sena"].control.focus()
+        else:
+            self.campos["nombre"].control.focus()
 
     def enviar(self):
         """Valida y registra. Si hay errores los muestra bajo cada campo y no guarda nada."""
         valores = {clave: campo.valor() for clave, campo in self.campos.items()}
-        errores, _ = reclamos.registrar_reclamo(self.app.datos, self.objeto_id, **valores)
+        usuario_id = self.app.usuario["id"] if self.app.usuario else None
+        errores, _ = reclamos.registrar_reclamo(self.app.datos, self.objeto_id, **valores, usuario_id=usuario_id)
         if "general" in errores:  # El objeto ya no está Disponible: se informa en Confirmación
             self.app.mostrar("confirmacion", exito=False, titulo="No se pudo registrar el reclamo",
                              detalle=errores["general"], objeto_id=self.objeto_id)
@@ -65,4 +70,4 @@ class PantallaReclamo(tk.Frame):
         self.app.guardar()
         self.app.mostrar("confirmacion", exito=True, titulo="¡Reclamo registrado!",
                          detalle=f"El objeto «{self.objeto['nombre']}» ahora está Reclamado.\n"
-                                 "Acércate a Inspección con tu seña particular para retirarlo.")
+                                 "Te avisaremos en ✉ Mis mensajes la hora de entrega en el edificio administrativo.")

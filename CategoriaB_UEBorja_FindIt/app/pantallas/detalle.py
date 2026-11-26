@@ -2,7 +2,7 @@
 import tkinter as tk
 from tkinter import messagebox
 
-from app import estilos
+from app import datos, estilos
 from app.logica import objetos, reclamos
 
 
@@ -23,7 +23,7 @@ class PantallaDetalle(tk.Frame):
         izquierda.grid(row=0, column=0, sticky="nsew", padx=(0, 12))
         tk.Label(izquierda, text=f" ID #{objeto['id']:02d} ", font=estilos.fuente(11, "bold"),
                  fg=estilos.BLANCO, bg=estilos.MARINO, pady=4).pack(anchor="e")
-        estilos.icono_categoria(izquierda, objeto["categoria"], 260).pack(expand=True, pady=10)
+        self._imagen(izquierda, objeto).pack(expand=True, pady=10)
         estilos.texto(izquierda, objeto["categoria"], 13, "bold", estilos.TEXTO_SUAVE, anchor="center").pack()
 
         # Derecha: estado, nombre, datos y botón Reclamar
@@ -65,6 +65,19 @@ class PantallaDetalle(tk.Frame):
         boton.pack(fill="x")
         if not se_puede:
             estilos.desactivar(boton)
+
+    def _imagen(self, padre, objeto):
+        """Foto del objeto si la tiene (reducida a ~260 px); si no, el ícono de su categoría."""
+        ruta = datos.ruta_foto(objeto.get("foto"))
+        if ruta:
+            try:
+                foto = tk.PhotoImage(file=str(ruta))
+                factor = max(1, -(-max(foto.width(), foto.height()) // 260))  # división hacia arriba
+                self.foto = foto.subsample(factor)  # se guarda en self para que no se borre de memoria
+                return tk.Label(padre, image=self.foto, bg=estilos.BLANCO)
+            except tk.TclError:
+                pass  # Archivo dañado: se usa el ícono
+        return estilos.icono_categoria(padre, objeto["categoria"], 260)
 
     def borrar(self, app, objeto):
         if not messagebox.askyesno("Borrar objeto", f"¿Borrar «{objeto['nombre']}» del listado?"):

@@ -10,13 +10,14 @@ class Campo:
     """Campo de formulario. tipo: "entrada" (una línea), "lista" (desplegable) o "texto" (varias líneas).
     Con contador=True muestra en vivo cuántos caracteres lleva frente al mínimo."""
 
-    def __init__(self, padre, etiqueta, tipo="entrada", opciones=(), ancho=24, contador=False):
+    def __init__(self, padre, etiqueta, tipo="entrada", opciones=(), ancho=24, contador=False, oculto=False):
         self.tipo = tipo
         self.marco = tk.Frame(padre, bg=estilos.BLANCO)
 
         cabecera = tk.Frame(self.marco, bg=estilos.BLANCO)
         cabecera.pack(fill="x", pady=(0, 4))
-        estilos.texto(cabecera, etiqueta, 11, "bold").pack(side="left")
+        self.etiqueta = estilos.texto(cabecera, etiqueta, 11, "bold")
+        self.etiqueta.pack(side="left")
         estilos.texto(cabecera, " *", 11, "bold", estilos.ERROR).pack(side="left")
         self.contador = estilos.texto(cabecera, "", 10, "bold") if contador else None
         if self.contador:
@@ -34,12 +35,35 @@ class Campo:
                                             state="readonly", width=ancho,
                                             height=min(len(opciones), 17))  # muestra todos los grados
             else:
-                self.control = ttk.Entry(self.marco, textvariable=self.variable, width=ancho)
+                # oculto=True: contraseña, se ve con puntos
+                self.control = ttk.Entry(self.marco, textvariable=self.variable, width=ancho, show="•" if oculto else "")
         self.control.pack(fill="x")
+        if tipo != "texto":
+            # Al corregir el campo, su mensaje de error desaparece
+            self.variable.trace_add("write", lambda *_: self.marcar(None))
 
         # El mensaje de error solo ocupa espacio cuando hay un error (ver marcar)
         self.error = estilos.texto(self.marco, "", 10, color=estilos.ERROR)
         self.actualizar_contador()
+
+    def habilitar(self, activo):
+        """Activa o desactiva el campo. Desactivado se vacía y su etiqueta se pone gris."""
+        if self.tipo == "texto":
+            self.control.configure(state="normal" if activo else "disabled")
+        else:
+            if not activo:
+                self.variable.set("")
+            estado = ("readonly" if self.tipo == "lista" else "normal") if activo else "disabled"
+            self.control.configure(state=estado)
+        self.etiqueta.configure(fg=estilos.TEXTO if activo else estilos.GRIS_DESACTIVADO)
+
+    def poner(self, valor):
+        """Escribe un valor en el campo (para llenar formularios automáticamente)."""
+        if self.tipo == "texto":
+            self.control.delete("1.0", "end")
+            self.control.insert("1.0", valor)
+        else:
+            self.variable.set(valor)
 
     def valor(self):
         if self.tipo == "texto":
@@ -73,3 +97,11 @@ def mostrar_errores(campos, errores):
     """Recorre los campos {clave: Campo} y marca los que tienen error."""
     for clave, campo in campos.items():
         campo.marcar(errores.get(clave))
+
+
+def llenar_con_usuario(campos, usuario):
+    """Llena nombre, apellido, correo, grado y paralelo con los datos de la cuenta que inició sesión."""
+    from app.logica.usuarios import datos_formulario
+    for clave, valor in datos_formulario(usuario).items():
+        if clave in campos:
+            campos[clave].poner(valor)

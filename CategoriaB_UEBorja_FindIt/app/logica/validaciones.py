@@ -101,3 +101,43 @@ def validar_objeto(nombre, categoria, lugar, fecha, descripcion):
         errores["fecha"] = "Usa el formato AAAA-MM-DD, por ejemplo 2026-11-26."
     validar_texto_largo(descripcion, "descripcion", errores, "una descripción del objeto")
     return errores
+
+
+ROLES = ["Estudiante", "Profesor"]
+MIN_CLAVE = 6
+FORMATOS_FOTO = (".png", ".gif")  # Formatos que Tkinter muestra sin librerías externas
+
+
+def validar_registro(nombre, apellido, rol, grado, paralelo, correo, clave, confirmar):
+    """Datos para crear una cuenta. El profesor indica el grado en el que da clases."""
+    errores = {}
+    for campo, valor in (("nombre", nombre), ("apellido", apellido)):
+        mensaje = _validar_nombre(valor, campo)
+        if mensaje:
+            errores[campo] = mensaje
+    if rol not in ROLES:
+        errores["rol"] = "Elige si eres Estudiante o Profesor."
+    if grado not in GRADOS or grado == DOCENTE:
+        errores["grado"] = "Selecciona el grado." if rol != "Profesor" else "Selecciona el grado en el que das clases."
+    if rol == "Estudiante" and paralelo not in PARALELOS:
+        errores["paralelo"] = "Selecciona tu paralelo."
+    validar_correo(correo, errores)
+    if "correo" not in errores and ".edu" not in correo.split("@")[-1].lower():
+        errores["correo"] = "Usa tu correo institucional (por ejemplo, termina en .edu.ec)."
+    if len(clave) < MIN_CLAVE:
+        errores["clave"] = f"La contraseña debe tener al menos {MIN_CLAVE} caracteres."
+    elif clave != confirmar:
+        errores["confirmar"] = "Las contraseñas no coinciden."
+    return errores
+
+
+def validar_hora(hora):
+    """Hora de entrega en formato HH:MM (24 horas)."""
+    return bool(re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d", hora.strip()))
+
+
+def validar_foto(ruta):
+    """La foto es opcional; si se elige, debe ser PNG o GIF."""
+    if ruta and not ruta.lower().endswith(FORMATOS_FOTO):
+        return "La foto debe ser PNG o GIF."
+    return None
