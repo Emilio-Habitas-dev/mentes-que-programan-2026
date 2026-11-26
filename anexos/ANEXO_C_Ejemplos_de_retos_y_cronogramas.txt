@@ -1,0 +1,35 @@
+ANEXO C. EJEMPLOS DE RETOS Y CRONOGRAMAS
+Mentes que Programan 2026 - Universidad Católica de Cuenca
+
+Los siguientes ejemplos no constituyen el enunciado oficial; el reto definitivo se entregará al inicio de cada categoría y será equivalente en dificultad para todos los equipos.
+
+
+C.1 SCRATCH: EJEMPLO "GUARDIANES DEL ECOSISTEMA"
+
+Diseñar un juego educativo en el que el usuario recoja residuos, evite obstáculos o clasifique materiales reciclables. Debe presentar instrucciones, al menos dos fondos, objetos interactivos, eventos, ciclos, condiciones, una variable de puntuación o vidas, una condición de finalización y posibilidad de reiniciar. Horario de desarrollo y entrega: 09:00-12:00. La defensa se organiza a partir de las 12:00 en turnos de hasta 11 minutos por equipo.
+
+Horario          Actividad
+09:00-09:15      Presentación del reto y reglas técnicas.
+09:15-09:35      Boceto y planificación de personajes, pantallas y reglas.
+09:35-10:45      Programación de escenarios, movimiento e interacción.
+10:45-11:20      Puntuación, condiciones y mecánica de finalización.
+11:20-11:40      Pruebas, depuración y mejoras de usabilidad.
+11:40-12:00      Entrega de archivo .sb3 y verificación técnica.
+Desde las 12:00  Defensas según turnos y estaciones asignadas.
+
+
+C.2 SOFTWARE CON IA: EJEMPLO "SERVICIOS ESTUDIANTILES"
+
+Diseñar una aplicación para consultar actividades, ver detalles y registrar una participación de prueba. Se espera un mapa de navegación, bocetos de pantallas, interfaz funcional, validación de formularios y manejo de datos de demostración. La aplicación deberá ejecutarse en la plataforma web, de escritorio o móvil elegida y mostrar interacción real. Horario de desarrollo y entrega: 09:00-15:00. Las defensas se organizan desde las 15:00 en turnos de hasta 11 minutos por equipo. Se incluye una pausa de alimentación; los equipos no podrán recibir asistencia externa durante ella.
+
+Horario          Actividad
+09:00-09:15      Presentación del reto y condiciones de IA.
+09:15-09:45      Análisis del problema y definición de funciones.
+09:45-10:15      Mapa de navegación, bocetos y diseño.
+10:15-11:30      Construcción de interfaz y componentes.
+11:30-12:30      Programación de lógica, formularios y datos.
+12:30-13:00      Pausa de alimentación.
+13:00-13:35      Integración, revisión de código y depuración.
+13:35-14:25      Pruebas y ajustes de usabilidad.
+14:25-15:00      Documentación, declaración de IA y entrega.
+Desde las 15:00  Defensas según turnos y estaciones asignadas.

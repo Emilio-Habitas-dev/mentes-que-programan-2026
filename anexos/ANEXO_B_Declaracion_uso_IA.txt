@@ -1,0 +1,39 @@
+ANEXO B. DECLARACIÓN DE USO DE IA (CATEGORÍA B)
+Mentes que Programan 2026 - Universidad Católica de Cuenca
+
+Institución y equipo:
+
+
+Herramientas utilizadas:
+
+
+Tareas en que se utilizaron:
+
+
+
+
+Prompt 1 (ejemplo sin datos personales):
+
+
+
+
+Prompt 2 (ejemplo sin datos personales):
+
+
+
+
+Resultado revisado, corregido o descartado:
+
+
+
+
+Pruebas realizadas para verificar la solución:
+
+
+
+
+Declaramos que podemos explicar los componentes principales de la solución y que no hemos compartido información sensible en herramientas de IA.
+
+Firma de representante del equipo:
+
+
